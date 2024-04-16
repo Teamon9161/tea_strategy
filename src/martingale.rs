@@ -74,7 +74,7 @@ where
                             }
                             last_signal = kwargs.init_pos;
                             open_price = Some(close);
-                        } else if profit < std * kwargs.take_profit {
+                        } else if profit < -std * kwargs.take_profit {
                             // increment win probability
                             win_p += kwargs.win_p_addup;
                             if win_p > 1. {
