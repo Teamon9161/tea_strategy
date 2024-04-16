@@ -66,7 +66,7 @@ where
                     step = 0;
                     if let Some(op) = open_price {
                         let profit = close - op;
-                        if profit > op + std * kwargs.take_profit {
+                        if profit > std * kwargs.take_profit {
                             // take profit and reset win probability
                             win_p -= kwargs.win_p_addup;
                             if win_p < init_win_p {
@@ -74,7 +74,7 @@ where
                             }
                             last_signal = kwargs.init_pos;
                             open_price = Some(close);
-                        } else if profit < op - std * kwargs.take_profit {
+                        } else if profit < std * kwargs.take_profit {
                             // increment win probability
                             win_p += kwargs.win_p_addup;
                             if win_p > 1. {
