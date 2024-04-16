@@ -2,10 +2,10 @@ use itertools::izip;
 use tea_core::prelude::*;
 
 pub struct StrategyFilter<T: Vec1View<Item = Option<bool>>> {
-    long_open: T,
-    long_stop: T,
-    short_open: T,
-    short_stop: T,
+    pub long_open: T,
+    pub long_stop: T,
+    pub short_open: T,
+    pub short_stop: T,
 }
 
 pub type FilterElement = (Option<bool>, Option<bool>, Option<bool>, Option<bool>);
