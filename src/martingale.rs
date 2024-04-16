@@ -60,6 +60,7 @@ where
                 }
                 let close = close.unwrap();
                 let std = std.unwrap();
+                step += 1;
                 if step >= kwargs.step {
                     // adjust position
                     step = 0;
