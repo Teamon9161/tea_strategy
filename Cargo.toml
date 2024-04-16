@@ -6,8 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = []
-
+default = ["time"]
+pl = ["tea-core/pl"]
+nd_array = ["tea-core/nd_array"]
+time = ["tea-core/time"]
 
 [dependencies]
 itertools = "0.12.1"
