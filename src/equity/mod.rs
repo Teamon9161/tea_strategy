@@ -12,10 +12,19 @@ pub enum CommisionType {
     Absolute,
 }
 
-
 impl From<String> for CommisionType {
     fn from(s: String) -> Self {
         match s.as_str() {
+            "percent" => CommisionType::Percent,
+            "absolute" => CommisionType::Absolute,
+            _ => unreachable!(),
+        }
+    }
+}
+
+impl<'a> From<&'a str> for CommisionType {
+    fn from(s: &'a str) -> Self {
+        match s {
             "percent" => CommisionType::Percent,
             "absolute" => CommisionType::Absolute,
             _ => unreachable!(),
