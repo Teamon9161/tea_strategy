@@ -15,11 +15,11 @@ serde = { version = "1.0", features = ["derive"] }
 
 [dependencies.tea-core]
 git = "https://github.com/Teamon9161/tevec.git"
-rev = "33c2f7e"
+rev = "24fe9ad"
 default-features = false
 features = []
 
 
 [dependencies.tea-rolling]
 git = "https://github.com/Teamon9161/tevec.git"
-rev = "33c2f7e"
+rev = "24fe9ad"

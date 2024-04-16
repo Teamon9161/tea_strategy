@@ -1,36 +1,22 @@
 #![allow(clippy::unused_unit)]
 use crate::StrategyFilter;
-use tea_core::prelude::*;
-use tea_rolling::*;
 use itertools::izip;
 use serde::Deserialize;
+use tea_core::prelude::*;
+use tea_rolling::*;
 
 #[derive(Deserialize)]
-struct BollKwargs {
+#[allow(dead_code)]
+pub struct BollKwargs {
     // window, open_width, stop_width, take_profit_width
     params: (usize, f64, f64, Option<f64>),
     min_periods: Option<usize>,
-    filter_flag: bool,
+    filter_flag: bool, // this is a flag to indicate if we need to use filter
     delay_open: bool,
     long_signal: f64,
     short_signal: f64,
     close_signal: f64,
 }
-
-
-
-// #[polars_expr(output_type=Float64)]
-// fn boll(inputs: &[Series], kwargs: BollKwargs) -> PolarsResult<Series> {
-//     let fac = inputs[0].f64()?;
-//     let middle = inputs[1].f64()?;
-//     let std_ = inputs[2].f64()?;
-//     let filter = if kwargs.filter_flag {
-//         Some(StrategyFilter::from_inputs(inputs, (3, 4, 5, 6))?)
-//     } else {
-//         None
-//     };
-//     Ok(impl_boll(fac, middle, std_, filter, kwargs).into_series())
-// }
 
 macro_rules! boll_logic_impl {
     (
@@ -83,37 +69,36 @@ macro_rules! boll_logic_impl {
 }
 
 #[allow(clippy::collapsible_else_if)]
-fn impl_boll<T, V: RollingValidFeature<T>, VMask: Vec1View<Item=Option<bool>>>(
+pub fn boll<
+    O: Vec1<Item = Option<f64>>,
+    T,
+    V: RollingValidFeature<T>,
+    VMask: Vec1View<Item = Option<bool>>,
+>(
     fac_arr: V,
     filter: Option<StrategyFilter<VMask>>,
     kwargs: BollKwargs,
-) -> VecOutType<V, Option<f64>> 
+) -> O
 where
-    T: Number + IsNone + Element,
-    Option<T>: Element,
-    V::Vec<Option<T>>: Vec1<Item=Option<T>>,
-    V::Vec<Option<f64>>: Vec1<Item=Option<f64>>,
+    T: Number + IsNone,
 {
     let m = kwargs.params.1;
     let mut last_signal = kwargs.close_signal;
     let mut last_fac = 0.;
     let min_periods = kwargs.min_periods.unwrap_or(kwargs.params.0 / 2);
-    let middle_arr = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
-    let std_arr = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
+    let middle_arr: O = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
+    let std_arr: O = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
     if let Some(filter) = filter {
         let zip_ = izip!(
-            fac_arr.to_iter(),
-            middle_arr.to_iter(),
-            std_arr.to_iter(),
-            filter.long_open.to_iter(),
-            filter.long_stop.to_iter(),
-            filter.short_open.to_iter(),
-            filter.short_stop.to_iter()
+            fac_arr.opt_iter_cast::<f64>(),
+            middle_arr.opt_iter_cast::<f64>(),
+            std_arr.opt_iter_cast::<f64>(),
+            filter.to_iter(),
         );
         if kwargs.delay_open {
             if let Some(m3) = kwargs.params.3 {
                 zip_.map(
-                    |(fac, middle, std, long_open, long_stop, short_open, short_stop)| {
+                    |(fac, middle, std, (long_open, long_stop, short_open, short_stop))| {
                         boll_logic_impl!(
                             kwargs, fac, middle, std,
                             last_signal, last_fac,
@@ -122,10 +107,10 @@ where
                         )
                     },
                 )
-                .collect_trusted()
+                .collect_trusted_vec1()
             } else {
                 zip_.map(
-                    |(fac, middle, std, long_open, long_stop, short_open, short_stop)| {
+                    |(fac, middle, std, (long_open, long_stop, short_open, short_stop))| {
                         boll_logic_impl!(
                             kwargs, fac, middle, std,
                             last_signal, last_fac,
@@ -133,12 +118,12 @@ where
                         )
                     },
                 )
-                .collect_trusted()
+                .collect_trusted_vec1()
             }
         } else {
             if let Some(m3) = kwargs.params.3 {
                 zip_.map(
-                    |(fac, middle, std, long_open, long_stop, short_open, short_stop)| {
+                    |(fac, middle, std, (long_open, long_stop, short_open, short_stop))| {
                         boll_logic_impl!(
                             kwargs, fac, middle, std,
                             last_signal, last_fac,
@@ -149,10 +134,10 @@ where
                         )
                     },
                 )
-                .collect_trusted()
+                .collect_trusted_vec1()
             } else {
                 zip_.map(
-                    |(fac, middle, std, long_open, long_stop, short_open, short_stop)| {
+                    |(fac, middle, std, (long_open, long_stop, short_open, short_stop))| {
                         boll_logic_impl!(
                             kwargs, fac, middle, std,
                             last_signal, last_fac,
@@ -162,52 +147,53 @@ where
                         )
                     },
                 )
-                .collect_trusted()
+                .collect_trusted_vec1()
             }
         }
     } else {
+        let zip_ = izip!(
+            fac_arr.opt_iter_cast::<f64>(),
+            middle_arr.opt_iter_cast::<f64>(),
+            std_arr.opt_iter_cast::<f64>(),
+        );
         if kwargs.delay_open {
             if let Some(m3) = kwargs.params.3 {
-                izip!(fac_arr, middle_arr, std_arr)
-                    .map(|(fac, middle, std)| {
-                        boll_logic_impl!(
-                            kwargs, fac, middle, std,
-                            last_signal, last_fac,
-                            profit_p=>m3,
-                        )
-                    })
-                    .collect_trusted()
+                zip_.map(|(fac, middle, std)| {
+                    boll_logic_impl!(
+                        kwargs, fac, middle, std,
+                        last_signal, last_fac,
+                        profit_p=>m3,
+                    )
+                })
+                .collect_trusted_vec1()
             } else {
-                izip!(fac_arr, middle_arr, std_arr)
-                    .map(|(fac, middle, std)| {
-                        boll_logic_impl!(kwargs, fac, middle, std, last_signal, last_fac,)
-                    })
-                    .collect_trusted()
+                zip_.map(|(fac, middle, std)| {
+                    boll_logic_impl!(kwargs, fac, middle, std, last_signal, last_fac,)
+                })
+                .collect_trusted_vec1()
             }
         } else {
             if let Some(m3) = kwargs.params.3 {
-                izip!(fac_arr, middle_arr, std_arr)
-                    .map(|(fac, middle, std)| {
-                        boll_logic_impl!(
-                            kwargs, fac, middle, std,
-                            last_signal, last_fac,
-                            long_open=>last_fac < m,
-                            short_open=>last_fac > -m,
-                            profit_p=>m3,
-                        )
-                    })
-                    .collect_trusted()
+                zip_.map(|(fac, middle, std)| {
+                    boll_logic_impl!(
+                        kwargs, fac, middle, std,
+                        last_signal, last_fac,
+                        long_open=>last_fac < m,
+                        short_open=>last_fac > -m,
+                        profit_p=>m3,
+                    )
+                })
+                .collect_trusted_vec1()
             } else {
-                izip!(fac_arr, middle_arr, std_arr)
-                    .map(|(fac, middle, std)| {
-                        boll_logic_impl!(
-                            kwargs, fac, middle, std,
-                            last_signal, last_fac,
-                            long_open=>last_fac < m,
-                            short_open=>last_fac > -m,
-                        )
-                    })
-                    .collect_trusted()
+                zip_.map(|(fac, middle, std)| {
+                    boll_logic_impl!(
+                        kwargs, fac, middle, std,
+                        last_signal, last_fac,
+                        long_open=>last_fac < m,
+                        short_open=>last_fac > -m,
+                    )
+                })
+                .collect_trusted_vec1()
             }
         }
     }
