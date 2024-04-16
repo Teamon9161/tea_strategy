@@ -197,3 +197,32 @@ where
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_boll() {
+        let close = vec![
+            10., 11., 11.9, 10., 11., 12., 10., 11., 12., 13., 14., 10., 7., 5., 4., 3., 4., 4.,
+            3., 2.,
+        ];
+        let kwargs = BollKwargs {
+            params: (4, 1.0, 0., None),
+            min_periods: None,
+            delay_open: false,
+            long_signal: 1.0,
+            short_signal: -1.0,
+            close_signal: 0.0,
+        };
+        let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
+        let signal: Vec<_> = boll(close.to_opt(), filter, &kwargs);
+        let expect: Vec<_> = vec![
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, -1, -1, -1, -1, -1, 0, 0, 0, -1,
+        ]
+        .to_opt()
+        .opt_iter_cast::<f64>()
+        .collect_trusted_vec1();
+        assert_eq!(expect, signal);
+    }
+}
