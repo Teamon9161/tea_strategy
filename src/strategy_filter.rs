@@ -10,11 +10,8 @@ pub struct StrategyFilter<T: Vec1View<Item = Option<bool>>> {
 
 pub type FilterElement = (Option<bool>, Option<bool>, Option<bool>, Option<bool>);
 
-
 impl<T: Vec1View<Item = Option<bool>>> StrategyFilter<T> {
-    pub fn to_iter(
-        &self,
-    ) -> TrustIter<impl Iterator<Item = FilterElement> + '_, FilterElement> {
+    pub fn to_iter(&self) -> TrustIter<impl Iterator<Item = FilterElement> + '_, FilterElement> {
         let iter = izip!(
             self.long_open.to_iter(),
             self.long_stop.to_iter(),

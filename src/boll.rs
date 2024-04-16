@@ -11,7 +11,6 @@ pub struct BollKwargs {
     // window, open_width, stop_width, take_profit_width
     pub params: (usize, f64, f64, Option<f64>),
     pub min_periods: Option<usize>,
-    pub filter_flag: bool, // this is a flag to indicate if we need to use filter
     pub delay_open: bool,
     pub long_signal: f64,
     pub short_signal: f64,
@@ -77,7 +76,7 @@ pub fn boll<
 >(
     fac_arr: V,
     filter: Option<StrategyFilter<VMask>>,
-    kwargs: BollKwargs,
+    kwargs: &BollKwargs,
 ) -> O
 where
     T: Number + IsNone,
