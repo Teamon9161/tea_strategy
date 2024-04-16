@@ -9,13 +9,13 @@ use tea_rolling::*;
 #[allow(dead_code)]
 pub struct BollKwargs {
     // window, open_width, stop_width, take_profit_width
-    params: (usize, f64, f64, Option<f64>),
-    min_periods: Option<usize>,
-    filter_flag: bool, // this is a flag to indicate if we need to use filter
-    delay_open: bool,
-    long_signal: f64,
-    short_signal: f64,
-    close_signal: f64,
+    pub params: (usize, f64, f64, Option<f64>),
+    pub min_periods: Option<usize>,
+    pub filter_flag: bool, // this is a flag to indicate if we need to use filter
+    pub delay_open: bool,
+    pub long_signal: f64,
+    pub short_signal: f64,
+    pub close_signal: f64,
 }
 
 macro_rules! boll_logic_impl {
