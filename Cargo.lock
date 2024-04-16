@@ -187,7 +187,7 @@ dependencies = [
 [[package]]
 name = "tea-core"
 version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?rev=24fe9ad#24fe9ad2dec201b3a4328e163b8e9badf111f26b"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#4e89266ddddf077ded7e9804d5b04a0c1c872bd0"
 dependencies = [
  "num-traits",
  "serde",
@@ -197,7 +197,7 @@ dependencies = [
 [[package]]
 name = "tea-dtype"
 version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?rev=24fe9ad#24fe9ad2dec201b3a4328e163b8e9badf111f26b"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#4e89266ddddf077ded7e9804d5b04a0c1c872bd0"
 dependencies = [
  "num-traits",
  "tea-time",
@@ -206,7 +206,7 @@ dependencies = [
 [[package]]
 name = "tea-rolling"
 version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?rev=24fe9ad#24fe9ad2dec201b3a4328e163b8e9badf111f26b"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#4e89266ddddf077ded7e9804d5b04a0c1c872bd0"
 dependencies = [
  "num-traits",
  "tea-core",
@@ -215,7 +215,7 @@ dependencies = [
 [[package]]
 name = "tea-time"
 version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?rev=24fe9ad#24fe9ad2dec201b3a4328e163b8e9badf111f26b"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#4e89266ddddf077ded7e9804d5b04a0c1c872bd0"
 dependencies = [
  "chrono",
 ]
