@@ -1,4 +1,3 @@
-#![allow(clippy::unused_unit)]
 use crate::StrategyFilter;
 use itertools::izip;
 use serde::Deserialize;
