@@ -2,6 +2,7 @@ use crate::StrategyFilter;
 use serde::Deserialize;
 use tea_core::prelude::*;
 use tea_rolling::*;
+use itertools::izip;
 
 #[inline]
 fn kelly(p: f64, b: f64) -> f64 {
@@ -24,6 +25,7 @@ pub struct MartingaleKwargs {
     pub take_profit: f64,
     // pub stop_loss: f64,
     pub b: f64, // profit loss ratio
+    pub stop_loss_m: Option<f64>
 }
 
 pub fn martingale<
@@ -39,7 +41,6 @@ pub fn martingale<
 where
     T: Number + IsNone,
 {
-    // let mut trades_profit = VecDeque::<f64>::new();
     let b = kwargs.b; // profit loss ratio
     let init_win_p = arc_kelly(kwargs.init_pos, b);
     assert!(
@@ -51,6 +52,7 @@ where
     let mut last_signal = kwargs.init_pos;
     let mut open_price: Option<f64> = None;
     let mut current_step = 0;
+    let middle_vec: O = close_vec.ts_vmean(kwargs.n, None);
     let std_vec: O = close_vec.ts_vstd(kwargs.n, None);
     let step = kwargs.step.unwrap_or(1);
     if let Some(_filter) = filter {
@@ -59,14 +61,17 @@ where
         //     .zip(filters.to_iter())
         //     .map(||)
     } else {
-        close_vec
-            .opt_iter_cast::<f64>()
-            .zip(std_vec.opt_iter_cast::<f64>())
-            .map(|(close, std)| {
-                if close.is_none() || std.is_none() {
+        izip!(
+            close_vec.opt_iter_cast::<f64>(),
+            middle_vec.opt_iter_cast::<f64>(),
+            std_vec.opt_iter_cast::<f64>(),
+        )
+        .map(|(close, middle, std)| {
+                if close.is_none() || middle.is_none() || std.is_none() {
                     return Some(last_signal);
                 }
                 let close = close.unwrap();
+                let middle = middle.unwrap();
                 let std = std.unwrap();
                 current_step += 1;
                 if current_step >= step {
@@ -74,11 +79,19 @@ where
                     current_step = 0;
                     if let Some(op) = open_price {
                         let profit = close - op;
+                        if let Some(stop_loss_m) = kwargs.stop_loss_m {
+                            let down = middle - stop_loss_m * std;
+                            if close <= down {
+                                // stop loss in downtrend
+                                win_p = init_win_p;
+                                last_signal = 0.;
+                                open_price = Some(close);
+                                return Some(last_signal);
+                            }
+                        }
                         if profit > std * kwargs.take_profit {
                             // take profit and reset win probability
-                            if win_p_flag {
-                                win_p = init_win_p;
-                            }
+                            win_p = init_win_p;
                             last_signal = kwargs.init_pos;
                             open_price = Some(close);
                         } else if profit < -std * kwargs.take_profit {
@@ -90,7 +103,14 @@ where
                                 }
                                 last_signal = kelly(win_p, b);
                             } else {
-                                last_signal *= kwargs.pos_mul.unwrap();
+                                if last_signal != 0. {
+                                    last_signal *= kwargs.pos_mul.unwrap();
+                                } else {
+                                    // in this case, we just finish stop loss
+                                    // in downtrend
+                                    last_signal = kwargs.init_pos;
+                                }
+                                
                                 if last_signal > 1. {
                                     last_signal = 1.;
                                 }
