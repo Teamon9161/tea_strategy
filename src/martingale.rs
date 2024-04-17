@@ -18,7 +18,8 @@ fn arc_kelly(pos: f64, b: f64) -> f64 {
 pub struct MartingaleKwargs {
     pub step: usize, // adjust step
     pub init_pos: f64,
-    pub win_p_addup: f64,
+    pub win_p_addup: Option<f64>,
+    pub pos_mul: Option<f64>,
     pub take_profit: f64,
     // pub stop_loss: f64,
     pub b: f64, // profit loss ratio
@@ -40,6 +41,11 @@ where
     // let mut trades_profit = VecDeque::<f64>::new();
     let b = kwargs.b; // profit loss ratio
     let init_win_p = arc_kelly(kwargs.init_pos, b);
+    assert!(
+        (kwargs.win_p_addup.is_some() || kwargs.pos_mul.is_some())
+            && !(kwargs.win_p_addup.is_some() && kwargs.pos_mul.is_some())
+    );
+    let win_p_flag = kwargs.win_p_addup.is_some();
     let mut win_p = init_win_p; // probability of win
     let mut last_signal = kwargs.init_pos;
     let mut open_price: Option<f64> = None;
@@ -68,19 +74,25 @@ where
                         let profit = close - op;
                         if profit > std * kwargs.take_profit {
                             // take profit and reset win probability
-                            win_p -= kwargs.win_p_addup;
-                            if win_p < init_win_p {
+                            if win_p_flag {
                                 win_p = init_win_p;
                             }
                             last_signal = kwargs.init_pos;
                             open_price = Some(close);
                         } else if profit < -std * kwargs.take_profit {
                             // increment win probability
-                            win_p += kwargs.win_p_addup;
-                            if win_p > 1. {
-                                win_p = 1.;
+                            if win_p_flag {
+                                win_p += kwargs.win_p_addup.unwrap();
+                                if win_p > 1. {
+                                    win_p = 1.;
+                                }
+                                last_signal = kelly(win_p, b);
+                            } else {
+                                last_signal *= kwargs.pos_mul.unwrap();
+                                if last_signal > 1. {
+                                    last_signal = 1.;
+                                }
                             }
-                            last_signal = kelly(win_p, b);
                             open_price = Some(close)
                         } else {
                             // just keep position
