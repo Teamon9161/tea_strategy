@@ -85,7 +85,7 @@ where
                                 // stop loss in downtrend
                                 win_p = init_win_p;
                                 last_signal = 0.;
-                                // open_price = Some(close);
+                                open_price = Some(close);
                                 return Some(0.);
                             }
                         }
