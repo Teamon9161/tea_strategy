@@ -16,7 +16,8 @@ fn arc_kelly(pos: f64, b: f64) -> f64 {
 
 #[derive(Deserialize)]
 pub struct MartingaleKwargs {
-    pub step: usize, // adjust step
+    pub n: usize, // rolling window
+    pub step: Option<usize>, // adjust step
     pub init_pos: f64,
     pub win_p_addup: Option<f64>,
     pub pos_mul: Option<f64>,
@@ -49,8 +50,9 @@ where
     let mut win_p = init_win_p; // probability of win
     let mut last_signal = kwargs.init_pos;
     let mut open_price: Option<f64> = None;
-    let mut step = 0;
-    let std_vec: O = close_vec.ts_vstd(kwargs.step, None);
+    let mut current_step = 0;
+    let std_vec: O = close_vec.ts_vstd(kwargs.n, None);
+    let step = kwargs.step.unwrap_or(1);
     if let Some(_filter) = filter {
         todo!()
         // close_vec.to_iter()
@@ -66,10 +68,10 @@ where
                 }
                 let close = close.unwrap();
                 let std = std.unwrap();
-                step += 1;
-                if step >= kwargs.step {
+                current_step += 1;
+                if current_step >= step {
                     // adjust position
-                    step = 0;
+                    current_step = 0;
                     if let Some(op) = open_price {
                         let profit = close - op;
                         if profit > std * kwargs.take_profit {
