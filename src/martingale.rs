@@ -83,9 +83,9 @@ where
                             let down = middle - stop_loss_m * std;
                             if close <= down {
                                 // stop loss in downtrend
-                                // win_p = init_win_p;
-                                // last_signal = 0.;
-                                open_price = Some(close);
+                                win_p = init_win_p;
+                                last_signal = 0.;
+                                // open_price = Some(close);
                                 return Some(0.);
                             }
                         }
