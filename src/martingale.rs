@@ -1,8 +1,7 @@
 use crate::StrategyFilter;
 use itertools::izip;
 use serde::Deserialize;
-use tea_core::prelude::*;
-use tea_rolling::*;
+use tevec::prelude::*;
 
 #[inline]
 fn kelly(p: f64, b: f64) -> f64 {

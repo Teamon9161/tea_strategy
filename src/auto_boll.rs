@@ -3,8 +3,7 @@ use std::collections::VecDeque;
 use crate::StrategyFilter;
 use itertools::izip;
 use serde::Deserialize;
-use tea_core::prelude::*;
-use tea_rolling::*;
+use tevec::prelude::*;
 
 #[derive(Deserialize)]
 #[allow(dead_code)]

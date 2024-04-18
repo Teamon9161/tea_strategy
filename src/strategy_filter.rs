@@ -1,5 +1,5 @@
 use itertools::izip;
-use tea_core::prelude::*;
+use tevec::prelude::*;
 
 pub struct StrategyFilter<T: Vec1View<Item = Option<bool>>> {
     pub long_open: T,
