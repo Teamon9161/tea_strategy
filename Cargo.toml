@@ -20,8 +20,3 @@ git = "https://github.com/Teamon9161/tevec.git"
 branch = "master"
 default-features = false
 features = ["rolling"]
-
-
-# [dependencies.tea-rolling]
-# git = "https://github.com/Teamon9161/tevec.git"
-# branch = "master"
