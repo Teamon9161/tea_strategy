@@ -134,7 +134,8 @@ where
     let max_trades_num = kwargs
         .pos_map
         .as_ref()
-        .map(|pm| pm.0.iter().map(|v| v.abs()).max().unwrap_or(0))
+        // .map(|pm| pm.0.iter().map(|v| v.abs()).max().unwrap_or(0))
+        .map(|pm| Vec1ViewAgg::max(pm.0.to_iter().abs()).unwrap())
         .unwrap_or(3) as usize;
     // get and check pos_map
     let (mut trades_num_vec, pos_vec) = kwargs
@@ -143,8 +144,8 @@ where
         .unwrap_or((vec![-3, 3], vec![1., 0.75, 0.5]));
     assert!(!pos_vec.is_empty());
     assert!(trades_num_vec.len() + 1 == pos_vec.len());
-    assert!(pos_vec.min().unwrap().f64() >= -1.);
-    assert!(pos_vec.max().unwrap().f64() <= 1.);
+    assert!(Vec1ViewAgg::min(pos_vec.to_iter()).unwrap().f64() >= -1.);
+    assert!(Vec1ViewAgg::max(pos_vec.to_iter()).unwrap().f64() <= 1.);
     trades_num_vec.insert(0, i32::MIN);
     trades_num_vec.push(i32::MAX);
 

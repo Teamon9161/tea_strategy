@@ -694,8 +694,8 @@ checksum = "c1bbb9f3c5c463a01705937a24fdabc5047929ac764b2d5b9cf681c1f5041ed5"
 
 [[package]]
 name = "tea-core"
-version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3abf4cd9a3e775d724585be4c503a205b99113a2"
+version = "0.1.2"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
 dependencies = [
  "ndarray",
  "num-traits",
@@ -707,17 +707,26 @@ dependencies = [
 
 [[package]]
 name = "tea-dtype"
-version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3abf4cd9a3e775d724585be4c503a205b99113a2"
+version = "0.1.2"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
 dependencies = [
  "num-traits",
  "tea-time",
 ]
 
 [[package]]
+name = "tea-map"
+version = "0.1.2"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
+dependencies = [
+ "num-traits",
+ "tea-core",
+]
+
+[[package]]
 name = "tea-rolling"
-version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3abf4cd9a3e775d724585be4c503a205b99113a2"
+version = "0.1.2"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
 dependencies = [
  "num-traits",
  "tea-core",
@@ -725,8 +734,8 @@ dependencies = [
 
 [[package]]
 name = "tea-time"
-version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3abf4cd9a3e775d724585be4c503a205b99113a2"
+version = "0.1.2"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
 dependencies = [
  "chrono",
 ]
@@ -742,11 +751,12 @@ dependencies = [
 
 [[package]]
 name = "tevec"
-version = "0.1.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3abf4cd9a3e775d724585be4c503a205b99113a2"
+version = "0.1.2"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
 dependencies = [
  "tea-core",
  "tea-dtype",
+ "tea-map",
  "tea-rolling",
 ]
 
