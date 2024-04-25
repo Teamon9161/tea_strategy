@@ -77,7 +77,8 @@ pub fn boll<
     kwargs: &BollKwargs,
 ) -> O
 where
-    T: Number + IsNone,
+    T: IsNone + Clone,
+    T::Inner: Number,
 {
     let m = kwargs.params.1;
     let mut last_signal = kwargs.close_signal;

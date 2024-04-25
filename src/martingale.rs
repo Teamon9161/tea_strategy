@@ -38,7 +38,8 @@ pub fn martingale<
     kwargs: &MartingaleKwargs,
 ) -> O
 where
-    T: Number + IsNone,
+    T::Inner: Number,
+    T: IsNone + Clone,
 {
     let b = kwargs.b; // profit loss ratio
     let init_win_p = arc_kelly(kwargs.init_pos, b);

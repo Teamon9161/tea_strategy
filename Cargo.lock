@@ -379,9 +379,9 @@ dependencies = [
 
 [[package]]
 name = "polars"
-version = "0.38.3"
+version = "0.39.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f01006048a264047d6cba081fed8e11adbd69c15956f9e53185a9ac4a541853c"
+checksum = "0ea21b858b16b9c0e17a12db2800d11aa5b4bd182be6b3022eb537bbfc1f2db5"
 dependencies = [
  "getrandom",
  "polars-arrow",
@@ -394,9 +394,9 @@ dependencies = [
 
 [[package]]
 name = "polars-arrow"
-version = "0.38.3"
+version = "0.39.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25197f40d71f82b2f79bb394f03e555d3cc1ce4db1dd052c28318721c71e96ad"
+checksum = "725b09f2b5ef31279b66e27bbab63c58d49d8f6696b66b1f46c7eaab95e80f75"
 dependencies = [
  "ahash",
  "atoi_simd",
@@ -434,9 +434,9 @@ dependencies = [
 
 [[package]]
 name = "polars-compute"
-version = "0.38.3"
+version = "0.39.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c354515f73cdbbad03c2bf723fcd68e6825943b3ec503055abc8a8cb08ce46bb"
+checksum = "a796945b14b14fbb79b91ef0406e6fddca2be636e889f81ea5d6ee7d36efb4fe"
 dependencies = [
  "bytemuck",
  "either",
@@ -450,9 +450,9 @@ dependencies = [
 
 [[package]]
 name = "polars-core"
-version = "0.38.3"
+version = "0.39.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6f20d3c227186f74aa3c228c64ef72f5a15617322fed30b4323eaf53b25f8e7b"
+checksum = "465f70d3e96b6d0b1a43c358ba451286b8c8bd56696feff020d65702aa33e35c"
 dependencies = [
  "ahash",
  "bitflags",
@@ -476,9 +476,9 @@ dependencies = [
 
 [[package]]
 name = "polars-error"
-version = "0.38.3"
+version = "0.39.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d66dd0ce51f8bd620eb8bd376502fe68a2b1a446d5433ecd2e75270b0755ce76"
+checksum = "5224d5d05e6b8a6f78b75951ae1b5f82c8ab1979e11ffaf5fd41941e3d5b0757"
 dependencies = [
  "polars-arrow-format",
  "simdutf8",
@@ -487,9 +487,9 @@ dependencies = [
 
 [[package]]
 name = "polars-parquet"
-version = "0.38.3"
+version = "0.39.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b8824ee00fbbe83d69553f2711014c50361238d210ed81a7a297695b7db97d42"
+checksum = "b421d2196f786fdfe162db614c8485f8308fe41575d4de634a39bbe460d1eb6a"
 dependencies = [
  "ahash",
  "base64",
@@ -506,9 +506,9 @@ dependencies = [
 
 [[package]]
 name = "polars-row"
-version = "0.38.3"
+version = "0.39.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63029da56ff6a720b190490bbc7b6263f9b72d1134311b1f381fc8d306d37770"
+checksum = "a515bdc68c2ae3702e3de70d89601f3b71ca8137e282a226dddb53ee4bacfa2e"
 dependencies = [
  "bytemuck",
  "polars-arrow",
@@ -518,9 +518,9 @@ dependencies = [
 
 [[package]]
 name = "polars-utils"
-version = "0.38.3"
+version = "0.39.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "694656a7d2b0cd8f07660dbc8d0fb7a81066ff57a452264907531d805c1e58c4"
+checksum = "c760b6c698cfe2fbbbd93d6cfb408db14ececfe1d92445dae2229ce1b5b21ae8"
 dependencies = [
  "ahash",
  "bytemuck",
@@ -532,6 +532,7 @@ dependencies = [
  "raw-cpuid",
  "rayon",
  "smartstring",
+ "stacker",
  "version_check",
 ]
 
@@ -542,6 +543,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a56dea16b0a29e94408b9aa5e2940a4eedbd128a1ba20e8f7ae60fd3d465af0e"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "psm"
+version = "0.1.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5787f7cda34e3033a72192c018bc5883100330f362ef279a8cbccfce8bb4e874"
+dependencies = [
+ "cc",
 ]
 
 [[package]]
@@ -638,6 +648,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "stacker"
+version = "0.1.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c886bd4480155fd3ef527d45e9ac8dd7118a898a46530b7b94c3e21866259fce"
+dependencies = [
+ "cc",
+ "cfg-if",
+ "libc",
+ "psm",
+ "winapi",
+]
+
+[[package]]
 name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -695,7 +718,7 @@ checksum = "c1bbb9f3c5c463a01705937a24fdabc5047929ac764b2d5b9cf681c1f5041ed5"
 [[package]]
 name = "tea-core"
 version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
 dependencies = [
  "ndarray",
  "num-traits",
@@ -708,7 +731,7 @@ dependencies = [
 [[package]]
 name = "tea-dtype"
 version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
 dependencies = [
  "num-traits",
  "tea-time",
@@ -717,7 +740,7 @@ dependencies = [
 [[package]]
 name = "tea-map"
 version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
 dependencies = [
  "num-traits",
  "tea-core",
@@ -726,7 +749,7 @@ dependencies = [
 [[package]]
 name = "tea-rolling"
 version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
 dependencies = [
  "num-traits",
  "tea-core",
@@ -735,7 +758,7 @@ dependencies = [
 [[package]]
 name = "tea-time"
 version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
 dependencies = [
  "chrono",
 ]
@@ -752,7 +775,7 @@ dependencies = [
 [[package]]
 name = "tevec"
 version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#2fe153b8e1c3de7188f15881532e868435da6ca1"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
 dependencies = [
  "tea-core",
  "tea-dtype",
@@ -851,6 +874,28 @@ name = "wasm-bindgen-shared"
 version = "0.2.92"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af190c94f2773fdb3729c55b007a722abb5384da03bc0986df4c289bf5567e96"
+
+[[package]]
+name = "winapi"
+version = "0.3.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c839a674fcd7a98952e593242ea400abe93992746761e38641405d28b00f419"
+dependencies = [
+ "winapi-i686-pc-windows-gnu",
+ "winapi-x86_64-pc-windows-gnu",
+]
+
+[[package]]
+name = "winapi-i686-pc-windows-gnu"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
+
+[[package]]
+name = "winapi-x86_64-pc-windows-gnu"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
 name = "windows-core"

@@ -123,7 +123,8 @@ pub fn auto_boll<
     kwargs: &AutoBollKwargs,
 ) -> O
 where
-    T: Number + IsNone,
+    T: IsNone + Clone,
+    T::Inner: Number,
 {
     let m = kwargs.params.1;
     let mut last_signal = kwargs.close_signal;
@@ -147,8 +148,8 @@ where
     trades_num_vec.insert(0, i32::MIN);
     trades_num_vec.push(i32::MAX);
 
-    let middle_arr: O = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
-    let std_arr: O = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
+    let middle_arr = fac_arr.ts_vmean::<O>(kwargs.params.0, Some(min_periods));
+    let std_arr = fac_arr.ts_vstd::<O>(kwargs.params.0, Some(min_periods));
     let mut open_price = f64::NAN;
     let mut trades_profit: VecDeque<f64> = vec![0.; max_trades_num].into();
     if let Some(filter) = filter {
