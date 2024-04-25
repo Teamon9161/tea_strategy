@@ -94,7 +94,7 @@ macro_rules! boll_logic_impl {
     };
 }
 
-fn get_adjust_param(win_time: i32, trades_num_vec: &Vec<i32>, pos_vec: &Vec<f64>) -> f64 {
+fn get_adjust_param(win_time: i32, trades_num_vec: &[i32], pos_vec: &Vec<f64>) -> f64 {
     let mut param = f64::NAN;
     trades_num_vec
         .windows(2)
@@ -104,10 +104,8 @@ fn get_adjust_param(win_time: i32, trades_num_vec: &Vec<i32>, pos_vec: &Vec<f64>
                 if (bound[0] < win_time) && (win_time <= bound[1]) {
                     param = *pos;
                 }
-            } else {
-                if (bound[0] <= win_time) && (win_time < bound[1]) {
-                    param = *pos;
-                }
+            } else if (bound[0] <= win_time) && (win_time < bound[1]) {
+                param = *pos;
             }
         });
     param
