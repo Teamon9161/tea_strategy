@@ -140,7 +140,7 @@ where
     let (mut trades_num_vec, pos_vec) = kwargs
         .pos_map
         .clone()
-        .unwrap_or((vec![-3, 3], vec![1., 0.75, 0.5]));
+        .unwrap_or((vec![-4, -2, 2], vec![1., 0.75, 0.5, 0.25]));
     assert!(!pos_vec.is_empty());
     assert!(trades_num_vec.len() + 1 == pos_vec.len());
     // assert!(Vec1ViewAgg::min(pos_vec.to_iter()).unwrap().f64() >= -1.);
@@ -244,8 +244,8 @@ mod tests {
         let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
         let signal: Vec<_> = auto_boll(close.to_opt(), filter, &kwargs);
         let expect: Vec<_> = vec![
-            0., 0., 0., 0., 0., 0., 0., 0., 0., 0.75, 0.75, -0.75, -0.75, -0.75, -0.75, -0.75, 0.,
-            0., 0., -0.75,
+            0., 0., 0., 0., 0., 0., 0., 0., 0., 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.,
+            0., 0., -0.5,
         ]
         .to_opt()
         .collect_vec1();
