@@ -100,7 +100,7 @@ fn get_adjust_param(win_time: i32, trades_num_vec: &[i32], pos_vec: &Vec<f64>) -
         .windows(2)
         .zip(pos_vec)
         .for_each(|(bound, pos)| {
-            if bound[1] < 0 {
+            if win_time < 0 {
                 if (bound[0] < win_time) && (win_time <= bound[1]) {
                     param = *pos;
                 }
