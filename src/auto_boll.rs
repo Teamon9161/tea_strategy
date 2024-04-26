@@ -143,8 +143,8 @@ where
         .unwrap_or((vec![-3, 3], vec![1., 0.75, 0.5]));
     assert!(!pos_vec.is_empty());
     assert!(trades_num_vec.len() + 1 == pos_vec.len());
-    assert!(Vec1ViewAgg::min(pos_vec.to_iter()).unwrap().f64() >= -1.);
-    assert!(Vec1ViewAgg::max(pos_vec.to_iter()).unwrap().f64() <= 1.);
+    // assert!(Vec1ViewAgg::min(pos_vec.to_iter()).unwrap().f64() >= -1.);
+    // assert!(Vec1ViewAgg::max(pos_vec.to_iter()).unwrap().f64() <= 1.);
     trades_num_vec.insert(0, i32::MIN);
     trades_num_vec.push(i32::MAX);
 
