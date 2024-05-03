@@ -30,13 +30,14 @@ macro_rules! boll_logic_impl {
         $(,)?
     ) => {
         {
-            if $fac.is_some() && $middle.is_some() && $std.is_some() && $std.unwrap() > 0. {
-                let fac = ($fac.unwrap() - $middle.unwrap()) / $std.unwrap();
+            if $fac.not_none() && $middle.not_none() && $std.not_none() && $std.clone().unwrap() > 0. {
+                let ori_fac = $fac.unwrap().f64();
+                let fac = (ori_fac - $middle.unwrap()) / $std.unwrap();
                 // == open condition
                 let mut open_flag = false;
                 if ($last_signal <= $kwargs.close_signal) && (fac >= $kwargs.params.1) $(&& $long_open.unwrap_or(true))? $(&& $long_open_cond)? {
                     // long open
-                    $open_price = $fac.unwrap();
+                    $open_price = ori_fac;
                     let mut profit_level = 0;
                     $trades_profit.iter().for_each(|profit| {
                         if *profit > 0. {
@@ -50,7 +51,7 @@ macro_rules! boll_logic_impl {
                     open_flag = true;
                 } else if ($last_signal >= $kwargs.close_signal) && (fac <= -$kwargs.params.1) $(&& $short_open.unwrap_or(true))? $(&& $short_open_cond)? {
                     // short open
-                    $open_price = $fac.unwrap();
+                    $open_price = ori_fac;
                     let mut profit_level = 0;
                     $trades_profit.iter().for_each(|profit| {
                         if *profit > 0. {
@@ -70,7 +71,7 @@ macro_rules! boll_logic_impl {
                         $(|| $long_stop.unwrap_or(false))?  // additional stop condition
                     {
                         // long stop
-                        let profit = ($fac.unwrap() / $open_price - 1.) * $last_signal;
+                        let profit = (ori_fac / $open_price - 1.) * $last_signal;
                         $trades_profit.pop_front();
                         $trades_profit.push_back(profit);
                         $last_signal = $kwargs.close_signal;
@@ -79,7 +80,7 @@ macro_rules! boll_logic_impl {
                         $(|| $short_stop.unwrap_or(false))?
                     {
                         // short stop
-                        let profit = ($fac.unwrap() / $open_price - 1.) * $last_signal;
+                        let profit = (ori_fac / $open_price - 1.) * $last_signal;
                         $trades_profit.pop_front();
                         $trades_profit.push_back(profit);
                         $last_signal = $kwargs.close_signal;
@@ -89,7 +90,7 @@ macro_rules! boll_logic_impl {
                 // == update open info
                 $last_fac = fac;
             }
-            Some($last_signal)
+            $last_signal
         }
     };
 }
@@ -113,9 +114,9 @@ fn get_adjust_param(win_time: i32, trades_num_vec: &[i32], pos_vec: &Vec<f64>) -
 
 #[allow(clippy::collapsible_else_if)]
 pub fn auto_boll<
-    O: Vec1<Item = Option<f64>>,
+    O: Vec1<Item = T::Cast<f64>>,
     T,
-    V: RollingValidFeature<T>,
+    V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
 >(
     fac_arr: V,
@@ -148,53 +149,49 @@ where
     trades_num_vec.insert(0, i32::MIN);
     trades_num_vec.push(i32::MAX);
 
-    let middle_arr = fac_arr.ts_vmean::<O>(kwargs.params.0, Some(min_periods));
-    let std_arr = fac_arr.ts_vstd::<O>(kwargs.params.0, Some(min_periods));
+    let middle_arr: Vec<_> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
+    let std_arr: Vec<_> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
     let mut open_price = f64::NAN;
     let mut trades_profit: VecDeque<f64> = vec![0.; max_trades_num].into();
     if let Some(filter) = filter {
         let zip_ = izip!(
-            fac_arr.opt_iter_cast::<f64>(),
-            middle_arr.opt_iter_cast::<f64>(),
-            std_arr.opt_iter_cast::<f64>(),
+            fac_arr.to_iter(),
+            middle_arr.to_iter(),
+            std_arr.to_iter(),
             filter.to_iter(),
         );
         if kwargs.delay_open {
             zip_.map(
                 |(fac, middle, std, (long_open, long_stop, short_open, short_stop))| {
-                    boll_logic_impl!(
+                    T::inner_cast(boll_logic_impl!(
                         kwargs, fac, middle, std,
                         last_signal, last_fac, open_price,
                         trades_profit, &trades_num_vec, &pos_vec,
                         filters=>(long_open, long_stop, short_open, short_stop),
-                    )
+                    ))
                 },
             )
             .collect_trusted_vec1()
         } else {
             zip_.map(
                 |(fac, middle, std, (long_open, long_stop, short_open, short_stop))| {
-                    boll_logic_impl!(
+                    T::inner_cast(boll_logic_impl!(
                         kwargs, fac, middle, std,
                         last_signal, last_fac, open_price,
                         trades_profit, &trades_num_vec, &pos_vec,
                         filters=>(long_open, long_stop, short_open, short_stop),
                         long_open=>last_fac < m,
                         short_open=>last_fac > -m,
-                    )
+                    ))
                 },
             )
             .collect_trusted_vec1()
         }
     } else {
-        let zip_ = izip!(
-            fac_arr.opt_iter_cast::<f64>(),
-            middle_arr.opt_iter_cast::<f64>(),
-            std_arr.opt_iter_cast::<f64>(),
-        );
+        let zip_ = izip!(fac_arr.to_iter(), middle_arr.to_iter(), std_arr.to_iter(),);
         if kwargs.delay_open {
             zip_.map(|(fac, middle, std)| {
-                boll_logic_impl!(
+                T::inner_cast(boll_logic_impl!(
                     kwargs,
                     fac,
                     middle,
@@ -205,18 +202,18 @@ where
                     trades_profit,
                     &trades_num_vec,
                     &pos_vec,
-                )
+                ))
             })
             .collect_trusted_vec1()
         } else {
             zip_.map(|(fac, middle, std)| {
-                boll_logic_impl!(
+                T::inner_cast(boll_logic_impl!(
                     kwargs, fac, middle, std,
                     last_signal, last_fac, open_price,
                     trades_profit, &trades_num_vec, &pos_vec,
                     long_open=>last_fac < m,
                     short_open=>last_fac > -m,
-                )
+                ))
             })
             .collect_trusted_vec1()
         }
@@ -242,13 +239,11 @@ mod tests {
             close_signal: 0.0,
         };
         let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
-        let signal: Vec<_> = auto_boll(close.to_opt(), filter, &kwargs);
+        let signal: Vec<_> = auto_boll(close, filter, &kwargs);
         let expect: Vec<_> = vec![
-            0., 0., 0., 0., 0., 0., 0., 0., 0., 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.,
-            0., 0., -0.5,
-        ]
-        .to_opt()
-        .collect_vec1();
+            0., 0., 0., 0., 0., 0., 0., 0., 0., 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0., 0., 0.,
+            -0.5,
+        ];
         assert_eq!(expect, signal);
     }
 }

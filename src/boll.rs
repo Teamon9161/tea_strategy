@@ -27,8 +27,9 @@ macro_rules! boll_logic_impl {
         $(,)?
     ) => {
         {
-            if $fac.is_some() && $middle.is_some() && $std.is_some() && $std.unwrap() > 0. {
-                let fac = ($fac.unwrap() - $middle.unwrap()) / $std.unwrap();
+            if $fac.not_none() && $middle.not_none() && $std.not_none() && $std.clone().unwrap() > 0. {
+                let ori_fac = $fac.unwrap().f64();
+                let fac = (ori_fac - $middle.unwrap()) / $std.unwrap();
                 // == open condition
                 let mut open_flag = false;
                 if ($last_signal != $kwargs.long_signal) && (fac >= $kwargs.params.1) $(&& $long_open.unwrap_or(true))? $(&& $long_open_cond)? {
@@ -60,16 +61,16 @@ macro_rules! boll_logic_impl {
                 // == update open info
                 $last_fac = fac;
             }
-            Some($last_signal)
+            $last_signal
         }
     };
 }
 
 #[allow(clippy::collapsible_else_if)]
 pub fn boll<
-    O: Vec1<Item = Option<f64>>,
+    O: Vec1<Item = T::Cast<f64>>,
     T,
-    V: RollingValidFeature<T>,
+    V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
 >(
     fac_arr: V,
@@ -84,13 +85,13 @@ where
     let mut last_signal = kwargs.close_signal;
     let mut last_fac = 0.;
     let min_periods = kwargs.min_periods.unwrap_or(kwargs.params.0 / 2);
-    let middle_arr: O = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
-    let std_arr: O = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
+    let middle_arr: Vec<_> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
+    let std_arr: Vec<_> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
     if let Some(filter) = filter {
         let zip_ = izip!(
-            fac_arr.opt_iter_cast::<f64>(),
-            middle_arr.opt_iter_cast::<f64>(),
-            std_arr.opt_iter_cast::<f64>(),
+            fac_arr.to_iter(),
+            middle_arr.to_iter(),
+            std_arr.to_iter(),
             filter.to_iter(),
         );
         if kwargs.delay_open {
@@ -103,6 +104,7 @@ where
                             filters=>(long_open, long_stop, short_open, short_stop),
                             profit_p=>m3,
                         )
+                        .into_cast::<T>()
                     },
                 )
                 .collect_trusted_vec1()
@@ -114,6 +116,7 @@ where
                             last_signal, last_fac,
                             filters=>(long_open, long_stop, short_open, short_stop),
                         )
+                        .into_cast::<T>()
                     },
                 )
                 .collect_trusted_vec1()
@@ -130,6 +133,7 @@ where
                             short_open=>last_fac > -m,
                             profit_p=>m3,
                         )
+                        .into_cast::<T>()
                     },
                 )
                 .collect_trusted_vec1()
@@ -143,17 +147,14 @@ where
                             long_open=>last_fac < m,
                             short_open=>last_fac > -m,
                         )
+                        .into_cast::<T>()
                     },
                 )
                 .collect_trusted_vec1()
             }
         }
     } else {
-        let zip_ = izip!(
-            fac_arr.opt_iter_cast::<f64>(),
-            middle_arr.opt_iter_cast::<f64>(),
-            std_arr.opt_iter_cast::<f64>(),
-        );
+        let zip_ = izip!(fac_arr.to_iter(), middle_arr.to_iter(), std_arr.to_iter(),);
         if kwargs.delay_open {
             if let Some(m3) = kwargs.params.3 {
                 zip_.map(|(fac, middle, std)| {
@@ -162,11 +163,13 @@ where
                         last_signal, last_fac,
                         profit_p=>m3,
                     )
+                    .into_cast::<T>()
                 })
                 .collect_trusted_vec1()
             } else {
                 zip_.map(|(fac, middle, std)| {
                     boll_logic_impl!(kwargs, fac, middle, std, last_signal, last_fac,)
+                        .into_cast::<T>()
                 })
                 .collect_trusted_vec1()
             }
@@ -180,6 +183,7 @@ where
                         short_open=>last_fac > -m,
                         profit_p=>m3,
                     )
+                    .into_cast::<T>()
                 })
                 .collect_trusted_vec1()
             } else {
@@ -190,6 +194,7 @@ where
                         long_open=>last_fac < m,
                         short_open=>last_fac > -m,
                     )
+                    .into_cast::<T>()
                 })
                 .collect_trusted_vec1()
             }

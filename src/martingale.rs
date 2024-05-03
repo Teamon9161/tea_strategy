@@ -28,9 +28,9 @@ pub struct MartingaleKwargs {
 }
 
 pub fn martingale<
-    O: Vec1<Item = Option<f64>>,
+    O: Vec1<Item = T::Cast<f64>>,
     T,
-    V: RollingValidFeature<T>,
+    V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
 >(
     close_vec: V,
@@ -53,131 +53,124 @@ where
     let mut open_price: Option<f64> = None;
     let mut current_step = 0;
     // let middle_vec: O = close_vec.ts_vmean(kwargs.n, None);
-    let std_vec: O = close_vec.ts_vstd(kwargs.n, None);
+    let std_vec: Vec<_> = close_vec.ts_vstd(kwargs.n, None);
     let step = kwargs.step.unwrap_or(1);
     if let Some(filter) = filter {
-        izip!(
-            close_vec.opt_iter_cast::<f64>(),
-            std_vec.opt_iter_cast::<f64>(),
-            filter.to_iter(),
-        )
-        .map(|(close, std, (long_open, _, _, _))| {
-            if close.is_none() | std.is_none() {
-                return Some(last_signal);
-            }
-            let close = close.unwrap();
-            let std = std.unwrap();
-            current_step += 1;
-            if current_step >= step {
-                // adjust position
-                current_step = 0;
-                if let Some(op) = open_price {
-                    let profit = close - op;
-                    if let Some(long_open) = long_open {
-                        if !long_open {
-                            // stop loss in downtrend
+        izip!(close_vec.to_iter(), std_vec.to_iter(), filter.to_iter(),)
+            .map(|(close, std, (long_open, _, _, _))| {
+                if close.is_none() | std.is_none() {
+                    return last_signal.into_cast::<T>();
+                }
+                let close = close.unwrap().f64();
+                let std = std.unwrap().f64();
+                current_step += 1;
+                if current_step >= step {
+                    // adjust position
+                    current_step = 0;
+                    if let Some(op) = open_price {
+                        let profit = close - op;
+                        if let Some(long_open) = long_open {
+                            if !long_open {
+                                // stop loss in downtrend
+                                win_p = init_win_p;
+                                last_signal = 0.;
+                                open_price = Some(close);
+                                return 0f64.into_cast::<T>();
+                            }
+                        }
+                        if profit > std * kwargs.take_profit {
+                            // take profit and reset win probability
                             win_p = init_win_p;
-                            last_signal = 0.;
+                            last_signal = kwargs.init_pos;
                             open_price = Some(close);
-                            return Some(0.);
-                        }
-                    }
-                    if profit > std * kwargs.take_profit {
-                        // take profit and reset win probability
-                        win_p = init_win_p;
-                        last_signal = kwargs.init_pos;
-                        open_price = Some(close);
-                    } else if profit < -std * kwargs.take_profit {
-                        // increment win probability
-                        if win_p_flag {
-                            win_p += kwargs.win_p_addup.unwrap();
-                            if win_p > 1. {
-                                win_p = 1.;
-                            }
-                            last_signal = kelly(win_p, b);
-                        } else {
-                            if last_signal != 0. {
-                                last_signal *= kwargs.pos_mul.unwrap();
+                        } else if profit < -std * kwargs.take_profit {
+                            // increment win probability
+                            if win_p_flag {
+                                win_p += kwargs.win_p_addup.unwrap();
+                                if win_p > 1. {
+                                    win_p = 1.;
+                                }
+                                last_signal = kelly(win_p, b);
                             } else {
-                                // in this case, we just finish stop loss
-                                // in downtrend
-                                last_signal = kwargs.init_pos;
-                            }
+                                if last_signal != 0. {
+                                    last_signal *= kwargs.pos_mul.unwrap();
+                                } else {
+                                    // in this case, we just finish stop loss
+                                    // in downtrend
+                                    last_signal = kwargs.init_pos;
+                                }
 
-                            if last_signal > 1. {
-                                last_signal = 1.;
+                                if last_signal > 1. {
+                                    last_signal = 1.;
+                                }
                             }
+                            open_price = Some(close)
+                        } else {
+                            // just keep position
                         }
-                        open_price = Some(close)
                     } else {
-                        // just keep position
+                        open_price = Some(close);
                     }
+                    last_signal.into_cast::<T>()
                 } else {
-                    open_price = Some(close);
+                    last_signal.into_cast::<T>()
                 }
-                Some(last_signal)
-            } else {
-                Some(last_signal)
-            }
-            // 是否止盈或止损
-        })
-        .collect_trusted_vec1()
+                // 是否止盈或止损
+            })
+            .collect_trusted_vec1()
     } else {
-        izip!(
-            close_vec.opt_iter_cast::<f64>(),
-            std_vec.opt_iter_cast::<f64>(),
-        )
-        .map(|(close, std)| {
-            if close.is_none() || std.is_none() {
-                return Some(last_signal);
-            }
-            let close = close.unwrap();
-            let std = std.unwrap();
-            current_step += 1;
-            if current_step >= step {
-                // adjust position
-                current_step = 0;
-                if let Some(op) = open_price {
-                    let profit = close - op;
-                    if profit > std * kwargs.take_profit {
-                        // take profit and reset win probability
-                        win_p = init_win_p;
-                        last_signal = kwargs.init_pos;
-                        open_price = Some(close);
-                    } else if profit < -std * kwargs.take_profit {
-                        // increment win probability
-                        if win_p_flag {
-                            win_p += kwargs.win_p_addup.unwrap();
-                            if win_p > 1. {
-                                win_p = 1.;
-                            }
-                            last_signal = kelly(win_p, b);
-                        } else {
-                            if last_signal != 0. {
-                                last_signal *= kwargs.pos_mul.unwrap();
-                            } else {
-                                // in this case, we just finish stop loss
-                                // in downtrend
-                                last_signal = kwargs.init_pos;
-                            }
-
-                            if last_signal > 1. {
-                                last_signal = 1.;
-                            }
-                        }
-                        open_price = Some(close)
-                    } else {
-                        // just keep position
-                    }
-                } else {
-                    open_price = Some(close);
+        izip!(close_vec.to_iter(), std_vec.to_iter(),)
+            .map(|(close, std)| {
+                if close.is_none() || std.is_none() {
+                    return last_signal.into_cast::<T>();
                 }
-                Some(last_signal)
-            } else {
-                Some(last_signal)
-            }
-            // 是否止盈或止损
-        })
-        .collect_trusted_vec1()
+                let close = close.unwrap().f64();
+                let std = std.unwrap().f64();
+                current_step += 1;
+                if current_step >= step {
+                    // adjust position
+                    current_step = 0;
+                    if let Some(op) = open_price {
+                        let profit = close - op;
+                        if profit > std * kwargs.take_profit {
+                            // take profit and reset win probability
+                            win_p = init_win_p;
+                            last_signal = kwargs.init_pos;
+                            open_price = Some(close);
+                        } else if profit < -std * kwargs.take_profit {
+                            // increment win probability
+                            if win_p_flag {
+                                win_p += kwargs.win_p_addup.unwrap();
+                                if win_p > 1. {
+                                    win_p = 1.;
+                                }
+                                last_signal = kelly(win_p, b);
+                            } else {
+                                if last_signal != 0. {
+                                    last_signal *= kwargs.pos_mul.unwrap();
+                                } else {
+                                    // in this case, we just finish stop loss
+                                    // in downtrend
+                                    last_signal = kwargs.init_pos;
+                                }
+
+                                if last_signal > 1. {
+                                    last_signal = 1.;
+                                }
+                            }
+                            open_price = Some(close)
+                        } else {
+                            // just keep position
+                        }
+                    } else {
+                        open_price = Some(close);
+                    }
+                    last_signal.into_cast::<T>()
+                } else {
+                    last_signal.into_cast::<T>()
+                }
+                // 是否止盈或止损
+            })
+            .collect_trusted_vec1()
     }
 }

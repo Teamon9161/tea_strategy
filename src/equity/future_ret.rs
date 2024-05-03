@@ -23,10 +23,11 @@ pub fn calc_future_ret<O, T, V, VMask>(
     kwargs: &FutureRetKwargs,
 ) -> O
 where
-    T: Number,
-    V: Vec1View<Item = Option<T>>,
+    T: IsNone + Clone,
+    T::Inner: Number,
+    V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
-    O: Vec1<Item = Option<f64>>,
+    O: Vec1<Item = T::Cast<f64>>,
 {
     let mut cash = kwargs.init_cash as f64;
     let mut last_pos = 0_f64; // pos_arr[0];
@@ -44,20 +45,20 @@ where
     let c_rate = kwargs.c_rate;
     if let Some(contract_chg_signal_vec) = contract_chg_signal_vec {
         izip!(
-            pos_vec.opt_iter_cast::<f64>(),
-            open_vec.opt_iter_cast::<f64>(),
-            close_vec.opt_iter_cast::<f64>(),
+            pos_vec.to_iter(),
+            open_vec.to_iter(),
+            close_vec.to_iter(),
             contract_chg_signal_vec.to_iter(),
         )
         .map(|(pos, open, close, chg)| {
             if pos.is_none() || open.is_none() || close.is_none() {
-                return Some(cash);
+                return cash.into_cast::<T>();
             } else if blowup && cash <= 0. {
-                return Some(0.);
+                return 0_f64.into_cast::<T>();
             }
-            let pos = pos.unwrap();
-            let open = open.unwrap();
-            let close = close.unwrap();
+            let pos = pos.unwrap().f64();
+            let open = open.unwrap().f64();
+            let close = close.unwrap().f64();
             let chg = chg.unwrap();
             if last_close.is_none() {
                 last_close = Some(open)
@@ -94,59 +95,57 @@ where
                 cash += last_lot_num * last_pos.signum() * (close - open) * multiplier;
             }
             last_close = Some(close); // update last close
-            Some(cash)
+            cash.into_cast::<T>()
         })
         .collect_trusted_vec1()
     } else {
         // ignore contract chg signal
         // this should be faster than the above
-        izip!(
-            pos_vec.opt_iter_cast::<f64>(),
-            open_vec.opt_iter_cast::<f64>(),
-            close_vec.opt_iter_cast::<f64>(),
-        )
-        .map(|(pos, open, close)| {
-            if pos.is_none() || open.is_none() || close.is_none() {
-                return Some(cash);
-            } else if blowup && cash <= 0. {
-                return Some(0.);
-            }
-            let pos = pos.unwrap();
-            let open = open.unwrap();
-            let close = close.unwrap();
-            if last_close.is_none() {
-                last_close = Some(open)
-            }
-            if last_lot_num != 0. {
-                cash +=
-                    last_lot_num * (open - last_close.unwrap()) * multiplier * last_pos.signum();
-            }
-            // we use pos to determine the position change, so leverage must be a constant
-            if pos != last_pos {
-                // the position has changed, calculate the new theoretical number of lots
-                let l = ((cash * leverage * pos.abs()) / (multiplier * open)).floor();
-                let (lot_num, lot_num_change) = (
-                    l,
-                    (l * pos.signum() - last_lot_num * last_pos.signum()).abs(),
-                );
+        izip!(pos_vec.to_iter(), open_vec.to_iter(), close_vec.to_iter(),)
+            .map(|(pos, open, close)| {
+                if pos.is_none() || open.is_none() || close.is_none() {
+                    return cash.into_cast::<T>();
+                } else if blowup && cash <= 0. {
+                    return 0_f64.into_cast::<T>();
+                }
+                let pos = pos.unwrap().f64();
+                let open = open.unwrap().f64();
+                let close = close.unwrap().f64();
+                if last_close.is_none() {
+                    last_close = Some(open)
+                }
+                if last_lot_num != 0. {
+                    cash += last_lot_num
+                        * (open - last_close.unwrap())
+                        * multiplier
+                        * last_pos.signum();
+                }
+                // we use pos to determine the position change, so leverage must be a constant
+                if pos != last_pos {
+                    // the position has changed, calculate the new theoretical number of lots
+                    let l = ((cash * leverage * pos.abs()) / (multiplier * open)).floor();
+                    let (lot_num, lot_num_change) = (
+                        l,
+                        (l * pos.signum() - last_lot_num * last_pos.signum()).abs(),
+                    );
 
-                // addup the commision fee
-                if let CommisionType::Percent = commision_type {
-                    cash -= lot_num_change * multiplier * (open * c_rate + slippage * ticksize);
-                } else {
-                    cash -= lot_num_change * (c_rate + multiplier * slippage * ticksize);
-                };
-                // update last lot num and last pos
-                last_lot_num = lot_num;
-                last_pos = pos;
-            }
-            // calculate the profit and loss of the current period
-            if last_lot_num != 0. {
-                cash += last_lot_num * last_pos.signum() * (close - open) * multiplier;
-            }
-            last_close = Some(close); // update last close
-            Some(cash)
-        })
-        .collect_trusted_vec1()
+                    // addup the commision fee
+                    if let CommisionType::Percent = commision_type {
+                        cash -= lot_num_change * multiplier * (open * c_rate + slippage * ticksize);
+                    } else {
+                        cash -= lot_num_change * (c_rate + multiplier * slippage * ticksize);
+                    };
+                    // update last lot num and last pos
+                    last_lot_num = lot_num;
+                    last_pos = pos;
+                }
+                // calculate the profit and loss of the current period
+                if last_lot_num != 0. {
+                    cash += last_lot_num * last_pos.signum() * (close - open) * multiplier;
+                }
+                last_close = Some(close); // update last close
+                cash.into_cast::<T>()
+            })
+            .collect_trusted_vec1()
     }
 }

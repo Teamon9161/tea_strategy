@@ -717,8 +717,8 @@ checksum = "c1bbb9f3c5c463a01705937a24fdabc5047929ac764b2d5b9cf681c1f5041ed5"
 
 [[package]]
 name = "tea-core"
-version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
+version = "0.1.3"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#9d23800f86cc4a8521b2582fee811485e626350d"
 dependencies = [
  "ndarray",
  "num-traits",
@@ -730,17 +730,27 @@ dependencies = [
 
 [[package]]
 name = "tea-dtype"
-version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
+version = "0.1.3"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#9d23800f86cc4a8521b2582fee811485e626350d"
 dependencies = [
  "num-traits",
  "tea-time",
 ]
 
 [[package]]
+name = "tea-macros"
+version = "0.1.3"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#9d23800f86cc4a8521b2582fee811485e626350d"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.59",
+]
+
+[[package]]
 name = "tea-map"
-version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
+version = "0.1.3"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#9d23800f86cc4a8521b2582fee811485e626350d"
 dependencies = [
  "num-traits",
  "tea-core",
@@ -748,17 +758,18 @@ dependencies = [
 
 [[package]]
 name = "tea-rolling"
-version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
+version = "0.1.3"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#9d23800f86cc4a8521b2582fee811485e626350d"
 dependencies = [
  "num-traits",
  "tea-core",
+ "tea-macros",
 ]
 
 [[package]]
 name = "tea-time"
-version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
+version = "0.1.3"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#9d23800f86cc4a8521b2582fee811485e626350d"
 dependencies = [
  "chrono",
 ]
@@ -774,8 +785,8 @@ dependencies = [
 
 [[package]]
 name = "tevec"
-version = "0.1.2"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3db8610fd32fb54357372d8de418c86934d8dff6"
+version = "0.1.3"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#9d23800f86cc4a8521b2582fee811485e626350d"
 dependencies = [
  "tea-core",
  "tea-dtype",

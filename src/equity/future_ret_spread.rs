@@ -22,10 +22,11 @@ pub fn calc_future_ret_with_spread<O, T, V, VMask>(
     kwargs: &FutureRetSpreadKwargs,
 ) -> O
 where
-    T: Number,
-    V: Vec1View<Item = Option<T>>,
+    T: IsNone + Clone,
+    T::Inner: Number,
+    V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
-    O: Vec1<Item = Option<f64>>,
+    O: Vec1<Item = T::Cast<f64>>,
 {
     let mut cash = kwargs.init_cash as f64;
     let mut last_pos = 0_f64; // pos_arr[0];
@@ -41,21 +42,21 @@ where
     let c_rate = kwargs.c_rate;
     if let Some(contract_chg_signal_vec) = contract_chg_signal_vec {
         izip!(
-            pos_vec.opt_iter_cast::<f64>(),
-            open_vec.opt_iter_cast::<f64>(),
-            close_vec.opt_iter_cast::<f64>(),
-            spread_vec.opt_iter_cast::<f64>(),
+            pos_vec.to_iter(),
+            open_vec.to_iter(),
+            close_vec.to_iter(),
+            spread_vec.to_iter(),
             contract_chg_signal_vec.to_iter(),
         )
         .map(|(pos, open, close, spread, chg)| {
             if pos.is_none() || open.is_none() || close.is_none() {
-                return Some(cash);
+                return cash.into_cast::<T>();
             } else if blowup && cash <= 0. {
-                return Some(0.);
+                return 0_f64.into_cast::<T>();
             }
-            let pos = pos.unwrap();
-            let open = open.unwrap();
-            let close = close.unwrap();
+            let pos = pos.unwrap().f64();
+            let open = open.unwrap().f64();
+            let close = close.unwrap().f64();
             let chg = chg.unwrap();
             if last_close.is_none() {
                 last_close = Some(open)
@@ -80,12 +81,19 @@ where
                 // addup the commision fee
                 if let CommisionType::Percent = commision_type {
                     let open_mul_c_rate = open * c_rate;
-                    cash -= lot_num_change
-                        * multiplier
-                        * (open_mul_c_rate + spread.unwrap_or(open_mul_c_rate));
+                    let spread = if spread.is_none() {
+                        open_mul_c_rate
+                    } else {
+                        spread.unwrap().f64()
+                    };
+                    cash -= lot_num_change * multiplier * (open_mul_c_rate + spread);
                 } else {
-                    cash -= lot_num_change
-                        * (c_rate + spread.map(|s| s * multiplier).unwrap_or(c_rate));
+                    let spread = if spread.is_none() {
+                        c_rate
+                    } else {
+                        spread.unwrap().f64() * multiplier
+                    };
+                    cash -= lot_num_change * (c_rate + spread);
                 };
                 // update last lot num and last pos
                 last_lot_num = lot_num;
@@ -96,27 +104,27 @@ where
                 cash += last_lot_num * last_pos.signum() * (close - open) * multiplier;
             }
             last_close = Some(close); // update last close
-            Some(cash)
+            cash.into_cast::<T>()
         })
         .collect_trusted_vec1()
     } else {
         // ignore contract chg signal
         // this should be faster than the above
         izip!(
-            pos_vec.opt_iter_cast::<f64>(),
-            open_vec.opt_iter_cast::<f64>(),
-            close_vec.opt_iter_cast::<f64>(),
-            spread_vec.opt_iter_cast::<f64>(),
+            pos_vec.to_iter(),
+            open_vec.to_iter(),
+            close_vec.to_iter(),
+            spread_vec.to_iter(),
         )
         .map(|(pos, open, close, spread)| {
             if pos.is_none() || open.is_none() || close.is_none() {
-                return Some(cash);
+                return cash.into_cast::<T>();
             } else if blowup && cash <= 0. {
-                return Some(0.);
+                return 0_f64.into_cast::<T>();
             }
-            let pos = pos.unwrap();
-            let open = open.unwrap();
-            let close = close.unwrap();
+            let pos = pos.unwrap().f64();
+            let open = open.unwrap().f64();
+            let close = close.unwrap().f64();
             if last_close.is_none() {
                 last_close = Some(open)
             }
@@ -136,12 +144,19 @@ where
                 // addup the commision fee
                 if let CommisionType::Percent = commision_type {
                     let open_mul_c_rate = open * c_rate;
-                    cash -= lot_num_change
-                        * multiplier
-                        * (open_mul_c_rate + spread.unwrap_or(open_mul_c_rate));
+                    let spread = if spread.is_none() {
+                        open_mul_c_rate
+                    } else {
+                        spread.unwrap().f64()
+                    };
+                    cash -= lot_num_change * multiplier * (open_mul_c_rate + spread);
                 } else {
-                    cash -= lot_num_change
-                        * (c_rate + spread.map(|s| s * multiplier).unwrap_or(c_rate));
+                    let spread = if spread.is_none() {
+                        c_rate
+                    } else {
+                        spread.unwrap().f64() * multiplier
+                    };
+                    cash -= lot_num_change * (c_rate + spread);
                 };
                 // update last lot num and last pos
                 last_lot_num = lot_num;
@@ -152,7 +167,7 @@ where
                 cash += last_lot_num * last_pos.signum() * (close - open) * multiplier;
             }
             last_close = Some(close); // update last close
-            Some(cash)
+            cash.into_cast::<T>()
         })
         .collect_trusted_vec1()
     }
