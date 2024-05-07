@@ -95,7 +95,7 @@ macro_rules! boll_logic_impl {
     };
 }
 
-fn get_adjust_param(win_time: i32, trades_num_vec: &[i32], pos_vec: &Vec<f64>) -> f64 {
+fn get_adjust_param(win_time: i32, trades_num_vec: &[i32], pos_vec: &[f64]) -> f64 {
     let mut param = f64::NAN;
     trades_num_vec
         .windows(2)
@@ -143,7 +143,7 @@ where
         .clone()
         .unwrap_or((vec![-4, -2, 2], vec![1., 0.75, 0.5, 0.25]));
     assert!(!pos_vec.is_empty());
-    assert!(trades_num_vec.len() + 1 == pos_vec.len());
+    assert_eq!(trades_num_vec.len() + 1, pos_vec.len());
     // assert!(Vec1ViewAgg::min(pos_vec.to_iter()).unwrap().f64() >= -1.);
     // assert!(Vec1ViewAgg::max(pos_vec.to_iter()).unwrap().f64() <= 1.);
     trades_num_vec.insert(0, i32::MIN);

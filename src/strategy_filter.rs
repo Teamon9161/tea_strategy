@@ -1,6 +1,7 @@
 use itertools::izip;
 use tevec::prelude::*;
 
+#[derive(Clone)]
 pub struct StrategyFilter<T: Vec1View<Item = Option<bool>>> {
     pub long_open: T,
     pub long_stop: T,
