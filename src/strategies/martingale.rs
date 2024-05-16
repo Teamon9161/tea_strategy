@@ -36,16 +36,17 @@ pub fn martingale<
     close_vec: V,
     filter: Option<StrategyFilter<VMask>>,
     kwargs: &MartingaleKwargs,
-) -> O
+) -> TResult<O>
 where
     T::Inner: Number,
     T: IsNone + Clone,
 {
     let b = kwargs.b; // profit loss ratio
     let init_win_p = arc_kelly(kwargs.init_pos, b);
-    assert!(
+    tensure!(
         (kwargs.win_p_addup.is_some() || kwargs.pos_mul.is_some())
-            && !(kwargs.win_p_addup.is_some() && kwargs.pos_mul.is_some())
+            && !(kwargs.win_p_addup.is_some() && kwargs.pos_mul.is_some()),
+        "win_p_addup and pos_mul should be exclusive"
     );
     let win_p_flag = kwargs.win_p_addup.is_some();
     let mut win_p = init_win_p; // probability of win
@@ -55,7 +56,7 @@ where
     // let middle_vec: O = close_vec.ts_vmean(kwargs.n, None);
     let std_vec: Vec<_> = close_vec.ts_vstd(kwargs.n, None);
     let step = kwargs.step.unwrap_or(1);
-    if let Some(filter) = filter {
+    let out = if let Some(filter) = filter {
         izip!(close_vec.to_iter(), std_vec.to_iter(), filter.to_iter(),)
             .map(|(close, std, (long_open, _, _, _))| {
                 if close.is_none() | std.is_none() {
@@ -172,5 +173,6 @@ where
                 // 是否止盈或止损
             })
             .collect_trusted_vec1()
-    }
+    };
+    Ok(out)
 }

@@ -34,7 +34,7 @@ pub fn fix_time<
     fac_arr: V,
     filter: Option<StrategyFilter<VMask>>,
     kwargs: &FixTimeKwargs,
-) -> O
+) -> TResult<O>
 where
     T: IsNone + Clone,
     T::Inner: Number,
@@ -43,14 +43,17 @@ where
         .pos_map
         .clone()
         .unwrap_or((vec![-1.5, 1.5], vec![-1., 0., 1.]));
-    assert!(!pos_vec.is_empty());
-    assert_eq!(bound_vec.len() + 1, pos_vec.len());
-    assert!(kwargs.n >= 1);
+    tensure!(!pos_vec.is_empty(), "pos vec should not be empty");
+    tensure!(
+        bound_vec.len() + 1 == pos_vec.len(),
+        "bound vec length should be pos vec length - 1"
+    );
+    tensure!(kwargs.n >= 1, "n should be greater than or equal to 1");
     bound_vec.insert(0, f64::MIN);
     bound_vec.push(f64::MAX);
     let mut remain_period = 0;
     let mut last_signal = 0.;
-    if let Some(filter) = filter {
+    let out = if let Some(filter) = filter {
         izip!(fac_arr.to_iter(), filter.to_iter(),)
             .map(|(fac, (long_open, long_stop, short_open, short_stop))| {
                 if remain_period >= 1 {
@@ -109,14 +112,15 @@ where
                 last_signal.into_cast::<T>()
             })
             .collect_trusted_vec1()
-    }
+    };
+    Ok(out)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
-    fn test_fix_time() {
+    fn test_fix_time() -> TResult<()> {
         let fac_vec = vec![
             0.8, 0.9, 1.5, 1.6, 1.3, 1.0, 0.6, 0.3, -0.1, -0.5, -1.0, -1.6, -1.8, -1.4, -1.3, -1.3,
             -1.5,
@@ -128,7 +132,7 @@ mod tests {
             extend_time: false,
         };
         let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
-        let signal: Vec<_> = fix_time(fac_vec.clone(), filter.clone(), &kwargs);
+        let signal: Vec<_> = fix_time(fac_vec.clone(), filter.clone(), &kwargs)?;
         let expect: Vec<_> = vec![
             0., 0., 1., 1., 1., 0., 0., 0., 0., 0., 0., -1., -1., -1., 0., 0., -1.,
         ];
@@ -139,10 +143,11 @@ mod tests {
             pos_map: Some((vec![-1.5, 1.5], vec![-1., 0., 1.])),
             extend_time: true,
         };
-        let signal: Vec<_> = fix_time(fac_vec, filter, &kwargs);
+        let signal: Vec<_> = fix_time(fac_vec, filter, &kwargs)?;
         let expect: Vec<_> = vec![
             0., 0., 1., 1., 1., 1., 0., 0., 0., 0., 0., -1., -1., -1., -1., -0., -1.,
         ];
         assert_eq!(signal, expect);
+        Ok(())
     }
 }
