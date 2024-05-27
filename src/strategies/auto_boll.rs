@@ -6,9 +6,8 @@ use serde::Deserialize;
 use tevec::prelude::*;
 
 #[derive(Deserialize)]
-#[allow(dead_code)]
 pub struct AutoBollKwargs {
-    // window, open_width, stop_width, analyse trade num
+    // window, open_width, stop_width
     pub params: (usize, f64, f64),
     pub min_periods: Option<usize>,
     pub pos_map: Option<(Vec<i32>, Vec<f64>)>,
@@ -122,7 +121,7 @@ pub fn auto_boll<
     fac_arr: V,
     filter: Option<StrategyFilter<VMask>>,
     kwargs: &AutoBollKwargs,
-) -> O
+) -> TResult<O>
 where
     T: IsNone + Clone,
     T::Inner: Number,
@@ -142,8 +141,12 @@ where
         .pos_map
         .clone()
         .unwrap_or((vec![-4, -2, 2], vec![1., 0.75, 0.5, 0.25]));
-    assert!(!pos_vec.is_empty());
-    assert_eq!(trades_num_vec.len() + 1, pos_vec.len());
+    // assert!(!pos_vec.is_empty());
+    tensure!(!pos_vec.is_empty(), "pos vec should not be empty");
+    tensure!(
+        trades_num_vec.len() + 1 == pos_vec.len(),
+        "trades num vec length should be pos vec length - 1"
+    );
     // assert!(Vec1ViewAgg::min(pos_vec.to_iter()).unwrap().f64() >= -1.);
     // assert!(Vec1ViewAgg::max(pos_vec.to_iter()).unwrap().f64() <= 1.);
     trades_num_vec.insert(0, i32::MIN);
@@ -153,7 +156,7 @@ where
     let std_arr: Vec<_> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
     let mut open_price = f64::NAN;
     let mut trades_profit: VecDeque<f64> = vec![0.; max_trades_num].into();
-    if let Some(filter) = filter {
+    let out = if let Some(filter) = filter {
         let zip_ = izip!(
             fac_arr.to_iter(),
             middle_arr.to_iter(),
@@ -217,14 +220,15 @@ where
             })
             .collect_trusted_vec1()
         }
-    }
+    };
+    Ok(out)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
-    fn test_auto_boll() {
+    fn test_auto_boll() -> TResult<()> {
         let close = vec![
             10., 11., 11.9, 10., 11., 12., 10., 11., 12., 13., 14., 10., 7., 5., 4., 3., 4., 4.,
             3., 2.,
@@ -239,11 +243,12 @@ mod tests {
             close_signal: 0.0,
         };
         let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
-        let signal: Vec<_> = auto_boll(close, filter, &kwargs);
+        let signal: Vec<_> = auto_boll(close, filter, &kwargs)?;
         let expect: Vec<_> = vec![
             0., 0., 0., 0., 0., 0., 0., 0., 0., 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0., 0., 0.,
             -0.5,
         ];
         assert_eq!(expect, signal);
+        Ok(())
     }
 }
