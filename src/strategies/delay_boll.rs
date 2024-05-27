@@ -36,20 +36,20 @@ macro_rules! boll_logic_impl {
                         $delay_open_flag = true;
                     }
                 } else if $delay_open_flag {
-                    if ($last_fac > $kwargs.params.3) && (fac <= $kwargs.params.3) {
+                    if ($last_fac > $kwargs.params.3) && (fac <= $kwargs.params.3) $(&& $long_open.unwrap_or(true))? {
                         $delay_open_flag = false;
                         $last_signal = $kwargs.long_signal;
-                    } else if ($last_fac < -$kwargs.params.3) && (fac >= -$kwargs.params.3) {
+                    } else if ($last_fac < -$kwargs.params.3) && (fac >= -$kwargs.params.3) $(&& $short_open.unwrap_or(true))? {
                         $delay_open_flag = false;
                         $last_signal = $kwargs.short_signal;
                     }
                 }
 
                 if let Some(chase_bound) = $kwargs.params.4 {
-                    if ($last_fac < chase_bound) && (fac >= chase_bound) {
+                    if ($last_fac < chase_bound) && (fac >= chase_bound) $(&& $long_open.unwrap_or(true))? {
                         $last_signal = $kwargs.long_signal;
                         $delay_open_flag = false;
-                    } else if ($last_fac > -chase_bound) && (fac <= -chase_bound) {
+                    } else if ($last_fac > -chase_bound) && (fac <= -chase_bound) $(&& $short_open.unwrap_or(true))? {
                         $last_signal = $kwargs.short_signal;
                         $delay_open_flag = false;
                     }
@@ -105,7 +105,7 @@ where
             "open_width should be less than chase_param"
         )
     }
-    let m = kwargs.params.1;
+    // let m = kwargs.params.1;
     let mut last_signal = kwargs.close_signal;
     let mut last_fac = 0.;
     let mut delay_open_flag = false;
@@ -127,8 +127,6 @@ where
                     kwargs, fac, middle, std,
                     last_signal, last_fac, delay_open_flag,
                     filters=>(long_open, long_stop, short_open, short_stop),
-                    long_open=>last_fac < m,
-                    short_open=>last_fac > -m,
                 ))
             },
         )
@@ -137,10 +135,13 @@ where
         let zip_ = izip!(fac_arr.to_iter(), middle_arr.to_iter(), std_arr.to_iter(),);
         zip_.map(|(fac, middle, std)| {
             T::inner_cast(boll_logic_impl!(
-                kwargs, fac, middle, std,
-                last_signal, last_fac, delay_open_flag,
-                long_open=>last_fac < m,
-                short_open=>last_fac > -m,
+                kwargs,
+                fac,
+                middle,
+                std,
+                last_signal,
+                last_fac,
+                delay_open_flag,
             ))
         })
         .collect_trusted_vec1()
