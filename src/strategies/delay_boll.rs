@@ -6,7 +6,7 @@ use tevec::prelude::*;
 #[derive(Deserialize)]
 pub struct DelayBollKwargs {
     // window, open_width, stop_width, delay_width
-    pub params: (usize, f64, f64, f64),
+    pub params: (usize, f64, f64, f64, Option<f64>),
     pub min_periods: Option<usize>,
     pub long_signal: f64,
     pub short_signal: f64,
@@ -42,6 +42,16 @@ macro_rules! boll_logic_impl {
                     } else if ($last_fac < -$kwargs.params.3) && (fac >= -$kwargs.params.3) {
                         $delay_open_flag = false;
                         $last_signal = $kwargs.short_signal;
+                    }
+                }
+
+                if let Some(chase_bound) = $kwargs.params.4 {
+                    if ($last_fac < chase_bound) && (fac >= chase_bound) {
+                        $last_signal = $kwargs.long_signal;
+                        $delay_open_flag = false;
+                    } else if ($last_fac > -chase_bound) && (fac <= -chase_bound) {
+                        $last_signal = $kwargs.short_signal;
+                        $delay_open_flag = false;
                     }
                 }
 
@@ -89,6 +99,12 @@ where
         (kwargs.params.3 > kwargs.params.2) && (kwargs.params.3 <= kwargs.params.1),
         "delay_width should be greater than stop_width and less than open_width"
     );
+    if let Some(chase_param) = kwargs.params.4 {
+        tensure!(
+            kwargs.params.1 < chase_param,
+            "open_width should be less than chase_param"
+        )
+    }
     let m = kwargs.params.1;
     let mut last_signal = kwargs.close_signal;
     let mut last_fac = 0.;
