@@ -8,7 +8,7 @@ edition = "2021"
 [features]
 default = []
 pl = ["tevec/pl"]
-nd_array = ["tevec/nd_array"]
+ndarray = ["tevec/ndarray"]
 time = ["tevec/time"]
 
 [dependencies]

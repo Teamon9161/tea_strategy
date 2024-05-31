@@ -111,8 +111,8 @@ where
     let mut delay_open_flag = false;
     let min_periods = kwargs.min_periods.unwrap_or(kwargs.params.0 / 2);
 
-    let middle_arr: Vec<_> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
-    let std_arr: Vec<_> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
+    let middle_arr: Vec<f64> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
+    let std_arr: Vec<f64> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
 
     let out = if let Some(filter) = filter {
         let zip_ = izip!(

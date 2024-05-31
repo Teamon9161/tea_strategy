@@ -152,8 +152,8 @@ where
     trades_num_vec.insert(0, i32::MIN);
     trades_num_vec.push(i32::MAX);
 
-    let middle_arr: Vec<_> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
-    let std_arr: Vec<_> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
+    let middle_arr: Vec<f64> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
+    let std_arr: Vec<f64> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
     let mut open_price = f64::NAN;
     let mut trades_profit: VecDeque<f64> = vec![0.; max_trades_num].into();
     let out = if let Some(filter) = filter {

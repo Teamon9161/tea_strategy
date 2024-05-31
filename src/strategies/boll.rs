@@ -85,8 +85,8 @@ where
     let mut last_signal = kwargs.close_signal;
     let mut last_fac = 0.;
     let min_periods = kwargs.min_periods.unwrap_or(kwargs.params.0 / 2);
-    let middle_arr: Vec<_> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
-    let std_arr: Vec<_> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
+    let middle_arr: Vec<f64> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
+    let std_arr: Vec<f64> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
     if let Some(filter) = filter {
         let zip_ = izip!(
             fac_arr.to_iter(),
@@ -220,11 +220,11 @@ mod tests {
             close_signal: 0.0,
         };
         let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
-        let signal: Vec<_> = boll(close.to_opt(), filter, &kwargs);
+        let signal: Vec<_> = boll(close.opt(), filter, &kwargs);
         let expect: Vec<_> = vec![
             0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, -1, -1, -1, -1, -1, 0, 0, 0, -1,
         ]
-        .to_opt()
+        .opt()
         .opt_iter_cast::<f64>()
         .collect_trusted_vec1();
         assert_eq!(expect, signal);

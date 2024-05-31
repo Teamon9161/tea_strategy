@@ -54,7 +54,7 @@ where
     let mut open_price: Option<f64> = None;
     let mut current_step = 0;
     // let middle_vec: O = close_vec.ts_vmean(kwargs.n, None);
-    let std_vec: Vec<_> = close_vec.ts_vstd(kwargs.n, None);
+    let std_vec: Vec<f64> = close_vec.ts_vstd(kwargs.n, None);
     let step = kwargs.step.unwrap_or(1);
     let out = if let Some(filter) = filter {
         izip!(close_vec.to_iter(), std_vec.to_iter(), filter.to_iter(),)
