@@ -92,7 +92,7 @@ pub fn delay_boll<
     kwargs: &DelayBollKwargs,
 ) -> TResult<O>
 where
-    T: IsNone + Clone,
+    T: IsNone,
     T::Inner: Number,
 {
     tensure!(
