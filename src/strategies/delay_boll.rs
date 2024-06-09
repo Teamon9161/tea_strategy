@@ -116,10 +116,10 @@ where
 
     let out = if let Some(filter) = filter {
         let zip_ = izip!(
-            fac_arr.to_iter(),
-            middle_arr.to_iter(),
-            std_arr.to_iter(),
-            filter.to_iter(),
+            fac_arr.titer(),
+            middle_arr.titer(),
+            std_arr.titer(),
+            filter.titer(),
         );
         zip_.map(
             |(fac, middle, std, (long_open, long_stop, short_open, short_stop))| {
@@ -132,7 +132,7 @@ where
         )
         .collect_trusted_vec1()
     } else {
-        let zip_ = izip!(fac_arr.to_iter(), middle_arr.to_iter(), std_arr.to_iter(),);
+        let zip_ = izip!(fac_arr.titer(), middle_arr.titer(), std_arr.titer(),);
         zip_.map(|(fac, middle, std)| {
             T::inner_cast(boll_logic_impl!(
                 kwargs,

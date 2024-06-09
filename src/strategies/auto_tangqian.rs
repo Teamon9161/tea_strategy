@@ -144,7 +144,7 @@ where
         .pos_map
         .as_ref()
         // .map(|pm| pm.0.iter().map(|v| v.abs()).max().unwrap_or(0))
-        .map(|pm| AggBasic::max(pm.0.to_iter().abs()).unwrap())
+        .map(|pm| AggBasic::max(pm.0.titer().abs()).unwrap())
         .unwrap_or(3) as usize;
     // get and check pos_map
     let (mut trades_num_vec, pos_vec) = kwargs
@@ -162,12 +162,12 @@ where
 
     let upper_arr: Vec<f64> = fac_arr
         .ts_vmax::<Vec<f64>, _>(kwargs.params.0, Some(min_periods))
-        .to_iter()
+        .titer()
         .vshift(1, None)
         .collect_trusted_vec1();
     let lower_arr: Vec<f64> = fac_arr
         .ts_vmin::<Vec<f64>, _>(kwargs.params.0, Some(min_periods))
-        .to_iter()
+        .titer()
         .vshift(1, None)
         .collect_trusted_vec1();
     let std_arr: Vec<f64> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
@@ -175,11 +175,11 @@ where
     let mut trades_profit: VecDeque<f64> = vec![0.; max_trades_num].into();
     let out = if let Some(filter) = filter {
         let zip_ = izip!(
-            fac_arr.to_iter(),
-            upper_arr.to_iter(),
-            lower_arr.to_iter(),
-            std_arr.to_iter(),
-            filter.to_iter(),
+            fac_arr.titer(),
+            upper_arr.titer(),
+            lower_arr.titer(),
+            std_arr.titer(),
+            filter.titer(),
         );
         zip_.map(
             |(fac, upper, lower, std, (long_open, long_stop, short_open, short_stop))| {
@@ -194,10 +194,10 @@ where
         .collect_trusted_vec1()
     } else {
         let zip_ = izip!(
-            fac_arr.to_iter(),
-            upper_arr.to_iter(),
-            lower_arr.to_iter(),
-            std_arr.to_iter(),
+            fac_arr.titer(),
+            upper_arr.titer(),
+            lower_arr.titer(),
+            std_arr.titer(),
         );
         zip_.map(|(fac, upper, lower, std)| {
             T::inner_cast(tangqian_logic_impl!(

@@ -12,12 +12,12 @@ pub struct StrategyFilter<T: Vec1View<Item = Option<bool>>> {
 pub type FilterElement = (Option<bool>, Option<bool>, Option<bool>, Option<bool>);
 
 impl<T: Vec1View<Item = Option<bool>>> StrategyFilter<T> {
-    pub fn to_iter(&self) -> TrustIter<impl Iterator<Item = FilterElement> + '_> {
+    pub fn titer(&self) -> TrustIter<impl Iterator<Item = FilterElement> + '_> {
         let iter = izip!(
-            self.long_open.to_iter(),
-            self.long_stop.to_iter(),
-            self.short_open.to_iter(),
-            self.short_stop.to_iter()
+            self.long_open.titer(),
+            self.long_stop.titer(),
+            self.short_open.titer(),
+            self.short_stop.titer()
         );
         TrustIter::new(iter, self.long_open.len())
     }

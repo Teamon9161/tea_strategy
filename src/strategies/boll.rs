@@ -89,10 +89,10 @@ where
     let std_arr: Vec<f64> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
     if let Some(filter) = filter {
         let zip_ = izip!(
-            fac_arr.to_iter(),
-            middle_arr.to_iter(),
-            std_arr.to_iter(),
-            filter.to_iter(),
+            fac_arr.titer(),
+            middle_arr.titer(),
+            std_arr.titer(),
+            filter.titer(),
         );
         if kwargs.delay_open {
             if let Some(m3) = kwargs.params.3 {
@@ -154,7 +154,7 @@ where
             }
         }
     } else {
-        let zip_ = izip!(fac_arr.to_iter(), middle_arr.to_iter(), std_arr.to_iter(),);
+        let zip_ = izip!(fac_arr.titer(), middle_arr.titer(), std_arr.titer(),);
         if kwargs.delay_open {
             if let Some(m3) = kwargs.params.3 {
                 zip_.map(|(fac, middle, std)| {

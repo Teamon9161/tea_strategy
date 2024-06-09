@@ -54,7 +54,7 @@ where
     let mut remain_period = 0;
     let mut last_signal = 0.;
     let out = if let Some(filter) = filter {
-        izip!(fac_arr.to_iter(), filter.to_iter(),)
+        izip!(fac_arr.titer(), filter.titer(),)
             .map(|(fac, (long_open, long_stop, short_open, short_stop))| {
                 if remain_period >= 1 {
                     remain_period -= 1;
@@ -90,7 +90,7 @@ where
             .collect_trusted_vec1()
     } else {
         fac_arr
-            .to_iter()
+            .titer()
             .map(|fac| {
                 if remain_period >= 1 {
                     remain_period -= 1;

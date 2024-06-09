@@ -134,7 +134,7 @@ where
         .pos_map
         .as_ref()
         // .map(|pm| pm.0.iter().map(|v| v.abs()).max().unwrap_or(0))
-        .map(|pm| AggBasic::max(pm.0.to_iter().abs()).unwrap())
+        .map(|pm| AggBasic::max(pm.0.titer().abs()).unwrap())
         .unwrap_or(3) as usize;
     // get and check pos_map
     let (mut trades_num_vec, pos_vec) = kwargs
@@ -147,8 +147,8 @@ where
         trades_num_vec.len() + 1 == pos_vec.len(),
         "trades num vec length should be pos vec length - 1"
     );
-    // assert!(Vec1ViewAgg::min(pos_vec.to_iter()).unwrap().f64() >= -1.);
-    // assert!(Vec1ViewAgg::max(pos_vec.to_iter()).unwrap().f64() <= 1.);
+    // assert!(Vec1ViewAgg::min(pos_vec.titer()).unwrap().f64() >= -1.);
+    // assert!(Vec1ViewAgg::max(pos_vec.titer()).unwrap().f64() <= 1.);
     trades_num_vec.insert(0, i32::MIN);
     trades_num_vec.push(i32::MAX);
 
@@ -158,10 +158,10 @@ where
     let mut trades_profit: VecDeque<f64> = vec![0.; max_trades_num].into();
     let out = if let Some(filter) = filter {
         let zip_ = izip!(
-            fac_arr.to_iter(),
-            middle_arr.to_iter(),
-            std_arr.to_iter(),
-            filter.to_iter(),
+            fac_arr.titer(),
+            middle_arr.titer(),
+            std_arr.titer(),
+            filter.titer(),
         );
         if kwargs.delay_open {
             zip_.map(
@@ -191,7 +191,7 @@ where
             .collect_trusted_vec1()
         }
     } else {
-        let zip_ = izip!(fac_arr.to_iter(), middle_arr.to_iter(), std_arr.to_iter(),);
+        let zip_ = izip!(fac_arr.titer(), middle_arr.titer(), std_arr.titer(),);
         if kwargs.delay_open {
             zip_.map(|(fac, middle, std)| {
                 T::inner_cast(boll_logic_impl!(

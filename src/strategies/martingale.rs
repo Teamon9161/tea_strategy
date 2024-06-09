@@ -57,7 +57,7 @@ where
     let std_vec: Vec<f64> = close_vec.ts_vstd(kwargs.n, None);
     let step = kwargs.step.unwrap_or(1);
     let out = if let Some(filter) = filter {
-        izip!(close_vec.to_iter(), std_vec.to_iter(), filter.to_iter(),)
+        izip!(close_vec.titer(), std_vec.titer(), filter.titer(),)
             .map(|(close, std, (long_open, _, _, _))| {
                 if close.is_none() | std.is_none() {
                     return last_signal.into_cast::<T>();
@@ -120,7 +120,7 @@ where
             })
             .collect_trusted_vec1()
     } else {
-        izip!(close_vec.to_iter(), std_vec.to_iter(),)
+        izip!(close_vec.titer(), std_vec.titer(),)
             .map(|(close, std)| {
                 if close.is_none() || std.is_none() {
                     return last_signal.into_cast::<T>();

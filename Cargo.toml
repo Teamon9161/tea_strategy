@@ -12,7 +12,7 @@ ndarray = ["tevec/ndarray"]
 time = ["tevec/time"]
 
 [dependencies]
-itertools = "0.12.1"
+itertools = "0.13"
 serde = { version = "1.0", features = ["derive"] }
 
 [dependencies.tevec]

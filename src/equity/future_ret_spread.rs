@@ -42,11 +42,11 @@ where
     let c_rate = kwargs.c_rate;
     if let Some(contract_chg_signal_vec) = contract_chg_signal_vec {
         izip!(
-            pos_vec.to_iter(),
-            open_vec.to_iter(),
-            close_vec.to_iter(),
-            spread_vec.to_iter(),
-            contract_chg_signal_vec.to_iter(),
+            pos_vec.titer(),
+            open_vec.titer(),
+            close_vec.titer(),
+            spread_vec.titer(),
+            contract_chg_signal_vec.titer(),
         )
         .map(|(pos, open, close, spread, chg)| {
             if pos.is_none() || open.is_none() || close.is_none() {
@@ -111,10 +111,10 @@ where
         // ignore contract chg signal
         // this should be faster than the above
         izip!(
-            pos_vec.to_iter(),
-            open_vec.to_iter(),
-            close_vec.to_iter(),
-            spread_vec.to_iter(),
+            pos_vec.titer(),
+            open_vec.titer(),
+            close_vec.titer(),
+            spread_vec.titer(),
         )
         .map(|(pos, open, close, spread)| {
             if pos.is_none() || open.is_none() || close.is_none() {
