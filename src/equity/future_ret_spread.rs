@@ -22,7 +22,7 @@ pub fn calc_future_ret_with_spread<O, T, V, VMask>(
     kwargs: &FutureRetSpreadKwargs,
 ) -> O
 where
-    T: IsNone + Clone,
+    T: IsNone,
     T::Inner: Number,
     V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,

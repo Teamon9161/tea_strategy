@@ -78,7 +78,7 @@ pub fn boll<
     kwargs: &BollKwargs,
 ) -> O
 where
-    T: IsNone + Clone,
+    T: IsNone,
     T::Inner: Number,
 {
     let m = kwargs.params.1;

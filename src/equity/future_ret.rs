@@ -23,7 +23,7 @@ pub fn calc_future_ret<O, T, V, VMask>(
     kwargs: &FutureRetKwargs,
 ) -> O
 where
-    T: IsNone + Clone,
+    T: IsNone,
     T::Inner: Number,
     V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,

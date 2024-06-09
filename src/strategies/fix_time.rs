@@ -36,7 +36,7 @@ pub fn fix_time<
     kwargs: &FixTimeKwargs,
 ) -> TResult<O>
 where
-    T: IsNone + Clone,
+    T: IsNone,
     T::Inner: Number,
 {
     let (mut bound_vec, pos_vec) = kwargs
