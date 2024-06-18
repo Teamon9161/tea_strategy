@@ -118,8 +118,8 @@ pub fn auto_boll<
     V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
 >(
-    fac_arr: V,
-    filter: Option<StrategyFilter<VMask>>,
+    fac_arr: &V,
+    filter: Option<&StrategyFilter<VMask>>,
     kwargs: &AutoBollKwargs,
 ) -> TResult<O>
 where
@@ -243,7 +243,7 @@ mod tests {
             close_signal: 0.0,
         };
         let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
-        let signal: Vec<_> = auto_boll(close, filter, &kwargs)?;
+        let signal: Vec<_> = auto_boll(&close, filter.as_ref(), &kwargs)?;
         let expect: Vec<_> = vec![
             0., 0., 0., 0., 0., 0., 0., 0., 0., 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0., 0., 0.,
             -0.5,

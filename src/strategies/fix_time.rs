@@ -31,8 +31,8 @@ pub fn fix_time<
     V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
 >(
-    fac_arr: V,
-    filter: Option<StrategyFilter<VMask>>,
+    fac_arr: &V,
+    filter: Option<&StrategyFilter<VMask>>,
     kwargs: &FixTimeKwargs,
 ) -> TResult<O>
 where
@@ -132,7 +132,7 @@ mod tests {
             extend_time: false,
         };
         let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
-        let signal: Vec<_> = fix_time(fac_vec.clone(), filter.clone(), &kwargs)?;
+        let signal: Vec<_> = fix_time(&fac_vec, filter.as_ref(), &kwargs)?;
         let expect: Vec<_> = vec![
             0., 0., 1., 1., 1., 0., 0., 0., 0., 0., 0., -1., -1., -1., 0., 0., -1.,
         ];
@@ -143,7 +143,7 @@ mod tests {
             pos_map: Some((vec![-1.5, 1.5], vec![-1., 0., 1.])),
             extend_time: true,
         };
-        let signal: Vec<_> = fix_time(fac_vec, filter, &kwargs)?;
+        let signal: Vec<_> = fix_time(&fac_vec, filter.as_ref(), &kwargs)?;
         let expect: Vec<_> = vec![
             0., 0., 1., 1., 1., 1., 0., 0., 0., 0., 0., -1., -1., -1., -1., -0., -1.,
         ];

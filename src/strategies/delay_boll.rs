@@ -87,8 +87,8 @@ pub fn delay_boll<
     V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
 >(
-    fac_arr: V,
-    filter: Option<StrategyFilter<VMask>>,
+    fac_arr: &V,
+    filter: Option<&StrategyFilter<VMask>>,
     kwargs: &DelayBollKwargs,
 ) -> TResult<O>
 where

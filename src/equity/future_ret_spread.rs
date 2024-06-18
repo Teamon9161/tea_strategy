@@ -14,10 +14,10 @@ pub struct FutureRetSpreadKwargs {
 }
 
 pub fn calc_future_ret_with_spread<O, T, V, VMask>(
-    pos_vec: V,
-    open_vec: V,
-    close_vec: V,
-    spread_vec: V,
+    pos_vec: &V,
+    open_vec: &V,
+    close_vec: &V,
+    spread_vec: &V,
     contract_chg_signal_vec: Option<VMask>,
     kwargs: &FutureRetSpreadKwargs,
 ) -> O

@@ -128,8 +128,8 @@ pub fn auto_tangqian<
     V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
 >(
-    fac_arr: V,
-    filter: Option<StrategyFilter<VMask>>,
+    fac_arr: &V,
+    filter: Option<&StrategyFilter<VMask>>,
     kwargs: &AutoTangQiAnKwargs,
 ) -> TResult<O>
 where

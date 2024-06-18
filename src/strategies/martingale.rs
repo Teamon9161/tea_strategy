@@ -33,8 +33,8 @@ pub fn martingale<
     V: Vec1View<Item = T>,
     VMask: Vec1View<Item = Option<bool>>,
 >(
-    close_vec: V,
-    filter: Option<StrategyFilter<VMask>>,
+    close_vec: &V,
+    filter: Option<&StrategyFilter<VMask>>,
     kwargs: &MartingaleKwargs,
 ) -> TResult<O>
 where
