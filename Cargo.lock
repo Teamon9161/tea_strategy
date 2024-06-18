@@ -100,9 +100,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.0.98"
+version = "1.0.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "41c270e7540d725e65ac7f1b212ac8ce349719624d7bcff99f8e2e488e8cf03f"
+checksum = "96c51067fd44124faa7f870b4b1c969379ad32b2ba805aa959430ceaa384f695"
 
 [[package]]
 name = "cfg-if"
@@ -157,13 +157,13 @@ checksum = "22ec99545bb0ed0ea7bb9b8e1e9122ea386ff8a48c0922e43f36d45ab09e0e80"
 
 [[package]]
 name = "derive_more"
-version = "0.99.17"
+version = "0.99.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4fb810d30a7c1953f91334de7244731fc3f3c10d7fe163338a35b9f640960321"
+checksum = "5f33878137e4dafd7fa914ad4e259e18a4e8e532b9617a2d0150262bf53abfce"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 1.0.109",
+ "syn 2.0.66",
 ]
 
 [[package]]
@@ -737,7 +737,7 @@ checksum = "c1bbb9f3c5c463a01705937a24fdabc5047929ac764b2d5b9cf681c1f5041ed5"
 [[package]]
 name = "tea-agg"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "tea-core",
 ]
@@ -745,7 +745,7 @@ dependencies = [
 [[package]]
 name = "tea-core"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "ndarray",
  "num-traits",
@@ -759,7 +759,7 @@ dependencies = [
 [[package]]
 name = "tea-dtype"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "num-traits",
  "tea-time",
@@ -768,7 +768,7 @@ dependencies = [
 [[package]]
 name = "tea-error"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "anyhow",
  "polars",
@@ -778,7 +778,7 @@ dependencies = [
 [[package]]
 name = "tea-macros"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -788,7 +788,7 @@ dependencies = [
 [[package]]
 name = "tea-map"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "anyhow",
  "itertools",
@@ -799,7 +799,7 @@ dependencies = [
 [[package]]
 name = "tea-rolling"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "num-traits",
  "tea-core",
@@ -809,7 +809,7 @@ dependencies = [
 [[package]]
 name = "tea-time"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "chrono",
  "tea-error",
@@ -827,12 +827,13 @@ dependencies = [
 [[package]]
 name = "tevec"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#a2d3830c8422ea971de6d864123dee54fc826447"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#5ffe266b7771d900871a1a5d1d65104c6d3f3cee"
 dependencies = [
  "derive_more",
  "tea-agg",
  "tea-core",
  "tea-dtype",
+ "tea-macros",
  "tea-map",
  "tea-rolling",
 ]
