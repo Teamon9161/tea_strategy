@@ -7,7 +7,7 @@ edition = "2021"
 
 [features]
 default = []
-pl = ["tevec/pl"]
+pl = ["tevec/pl", "time"]
 ndarray = ["tevec/ndarray"]
 time = ["tevec/time"]
 
