@@ -25,12 +25,7 @@ fn get_pos(fac: f64, bound_vec: &[f64], pos_vec: &Vec<f64>) -> f64 {
 }
 
 #[allow(clippy::collapsible_else_if)]
-pub fn fix_time<
-    O: Vec1<Item = T::Cast<f64>>,
-    T,
-    V: Vec1View<Item = T>,
-    VMask: Vec1View<Item = Option<bool>>,
->(
+pub fn fix_time<O: Vec1<T::Cast<f64>>, T, V: Vec1View<T>, VMask: Vec1View<Option<bool>>>(
     fac_arr: &V,
     filter: Option<&StrategyFilter<VMask>>,
     kwargs: &FixTimeKwargs,

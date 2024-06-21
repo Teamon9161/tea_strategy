@@ -27,12 +27,7 @@ pub struct MartingaleKwargs {
     pub stop_loss_m: Option<f64>,
 }
 
-pub fn martingale<
-    O: Vec1<Item = T::Cast<f64>>,
-    T,
-    V: Vec1View<Item = T>,
-    VMask: Vec1View<Item = Option<bool>>,
->(
+pub fn martingale<O: Vec1<T::Cast<f64>>, T, V: Vec1View<T>, VMask: Vec1View<Option<bool>>>(
     close_vec: &V,
     filter: Option<&StrategyFilter<VMask>>,
     kwargs: &MartingaleKwargs,

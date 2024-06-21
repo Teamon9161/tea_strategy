@@ -81,12 +81,7 @@ macro_rules! boll_logic_impl {
 }
 
 #[allow(clippy::collapsible_else_if)]
-pub fn delay_boll<
-    O: Vec1<Item = T::Cast<f64>>,
-    T,
-    V: Vec1View<Item = T>,
-    VMask: Vec1View<Item = Option<bool>>,
->(
+pub fn delay_boll<O: Vec1<T::Cast<f64>>, T, V: Vec1View<T>, VMask: Vec1View<Option<bool>>>(
     fac_arr: &V,
     filter: Option<&StrategyFilter<VMask>>,
     kwargs: &DelayBollKwargs,

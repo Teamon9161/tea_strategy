@@ -1235,7 +1235,7 @@ checksum = "c1bbb9f3c5c463a01705937a24fdabc5047929ac764b2d5b9cf681c1f5041ed5"
 [[package]]
 name = "tea-agg"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "tea-core",
 ]
@@ -1243,7 +1243,7 @@ dependencies = [
 [[package]]
 name = "tea-core"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "ndarray",
  "num-traits",
@@ -1257,7 +1257,7 @@ dependencies = [
 [[package]]
 name = "tea-dtype"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "num-traits",
  "tea-time",
@@ -1266,7 +1266,7 @@ dependencies = [
 [[package]]
 name = "tea-error"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "anyhow",
  "polars",
@@ -1276,7 +1276,7 @@ dependencies = [
 [[package]]
 name = "tea-macros"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1286,7 +1286,7 @@ dependencies = [
 [[package]]
 name = "tea-map"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "anyhow",
  "itertools",
@@ -1297,7 +1297,7 @@ dependencies = [
 [[package]]
 name = "tea-rolling"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "num-traits",
  "tea-core",
@@ -1307,7 +1307,7 @@ dependencies = [
 [[package]]
 name = "tea-time"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "chrono",
  "tea-error",
@@ -1327,7 +1327,7 @@ dependencies = [
 [[package]]
 name = "tevec"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#6687e51de067a7ec1667f3bf2e5d1c5c64d22100"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
 dependencies = [
  "derive_more",
  "tea-agg",

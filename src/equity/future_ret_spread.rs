@@ -24,9 +24,9 @@ pub fn calc_future_ret_with_spread<O, T, V, VMask>(
 where
     T: IsNone,
     T::Inner: Number,
-    V: Vec1View<Item = T>,
-    VMask: Vec1View<Item = Option<bool>>,
-    O: Vec1<Item = T::Cast<f64>>,
+    V: Vec1View<T>,
+    VMask: Vec1View<Option<bool>>,
+    O: Vec1<T::Cast<f64>>,
 {
     let mut cash = kwargs.init_cash as f64;
     let mut last_pos = 0_f64; // pos_arr[0];

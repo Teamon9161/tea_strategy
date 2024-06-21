@@ -122,12 +122,7 @@ fn get_adjust_param(win_time: i32, trades_num_vec: &[i32], pos_vec: &[f64]) -> f
 }
 
 #[allow(clippy::collapsible_else_if)]
-pub fn auto_tangqian<
-    O: Vec1<Item = T::Cast<f64>>,
-    T,
-    V: Vec1View<Item = T>,
-    VMask: Vec1View<Item = Option<bool>>,
->(
+pub fn auto_tangqian<O: Vec1<T::Cast<f64>>, T, V: Vec1View<T>, VMask: Vec1View<Option<bool>>>(
     fac_arr: &V,
     filter: Option<&StrategyFilter<VMask>>,
     kwargs: &AutoTangQiAnKwargs,
