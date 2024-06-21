@@ -70,25 +70,25 @@ impl Trade {
 }
 
 #[derive(From)]
-pub enum PriceVec<'a, V: Vec1View> {
+pub enum PriceVec<I: IntoIterator> {
     // bid price vec, ask price vec
-    BidAsk(&'a V, &'a V),
-    Single(&'a V),
+    BidAsk(I, I),
+    Single(I),
 }
 
 /// Create trades info from signal,
 /// note that we cann't get a real trade num,
 /// num in the Trade is just a change of signal
 pub fn signal_to_trades<
-    V: Vec1View<Item = T>,
-    V2: Vec1View<Item = T2>,
-    VT: Vec1View<Item = DateTime>,
+    V: IntoIterator<Item = T>,
+    V2: IntoIterator<Item = T2>,
+    VT: IntoIterator<Item = DateTime>,
     T: IsNone,
     T2: IsNone,
 >(
-    signal_vec: &V,
+    signal_vec: V,
     price_vec: PriceVec<V2>,
-    time_vec: &VT,
+    time_vec: VT,
 ) -> Vec<Trade>
 where
     T::Inner: Number,
@@ -98,13 +98,7 @@ where
         PriceVec::BidAsk(bid_vec, ask_vec) => {
             let mut last_signal = f64::NAN;
             let mut trades = Vec::new();
-            izip!(
-                time_vec.titer(),
-                signal_vec.titer(),
-                bid_vec.titer(),
-                ask_vec.titer()
-            )
-            .for_each(|(time, signal, bid, ask)| {
+            izip!(time_vec, signal_vec, bid_vec, ask_vec).for_each(|(time, signal, bid, ask)| {
                 if signal.not_none() {
                     let signal = signal.unwrap().f64();
                     if signal > last_signal {
@@ -130,29 +124,27 @@ where
         PriceVec::Single(price_vec) => {
             let mut last_signal = f64::NAN;
             let mut trades = Vec::new();
-            izip!(time_vec.titer(), signal_vec.titer(), price_vec.titer()).for_each(
-                |(time, signal, price)| {
-                    if signal.not_none() {
-                        let signal = signal.unwrap().f64();
-                        if signal > last_signal {
-                            trades.push(Trade::new(
-                                time.clone(),
-                                TradeSide::Buy,
-                                price.to_opt().map(|v| v.f64()).unwrap_or(f64::NAN),
-                                signal - last_signal,
-                            ));
-                        } else if signal < last_signal {
-                            trades.push(Trade::new(
-                                time.clone(),
-                                TradeSide::Sell,
-                                price.to_opt().map(|v| v.f64()).unwrap_or(f64::NAN),
-                                last_signal - signal,
-                            ));
-                        }
-                        last_signal = signal;
+            izip!(time_vec, signal_vec, price_vec).for_each(|(time, signal, price)| {
+                if signal.not_none() {
+                    let signal = signal.unwrap().f64();
+                    if signal > last_signal {
+                        trades.push(Trade::new(
+                            time.clone(),
+                            TradeSide::Buy,
+                            price.to_opt().map(|v| v.f64()).unwrap_or(f64::NAN),
+                            signal - last_signal,
+                        ));
+                    } else if signal < last_signal {
+                        trades.push(Trade::new(
+                            time.clone(),
+                            TradeSide::Sell,
+                            price.to_opt().map(|v| v.f64()).unwrap_or(f64::NAN),
+                            last_signal - signal,
+                        ));
                     }
-                },
-            );
+                    last_signal = signal;
+                }
+            });
             trades
         }
     }
@@ -212,7 +204,11 @@ mod tests {
         .map(|s| DateTime::<unit::Nanosecond>::parse(s, None).unwrap())
         .collect_trusted_to_vec();
         let price = vec![10., 11., 12., 13., 14., 15.];
-        let trades = signal_to_trades(&signal, PriceVec::Single(&price), &time);
+        let trades = signal_to_trades(
+            signal.titer(),
+            PriceVec::Single(price.titer()),
+            time.titer(),
+        );
         let expect = vec![
             Trade::new(time[2].clone(), TradeSide::Buy, price[2].clone(), 0.5),
             Trade::new(time[4].clone(), TradeSide::Buy, price[4].clone(), 0.5),
