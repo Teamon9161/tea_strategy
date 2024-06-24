@@ -35,7 +35,7 @@ fn check_kwargs(kwargs: &ProbThresholdKwargs) -> TResult<()> {
     Ok(())
 }
 
-#[allow(clippy::collapsible_else_if)]
+#[allow(clippy::collapsible_else_if, clippy::if_same_then_else)]
 pub fn prob_threshold<O: Vec1<U>, U, T, V: Vec1View<T>, VMask: Vec1View<Option<bool>>>(
     fac_arr: &V,
     filter: Option<&StrategyFilter<VMask>>,

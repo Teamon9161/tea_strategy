@@ -103,14 +103,14 @@ where
                     let signal = signal.unwrap().f64();
                     if signal > last_signal {
                         trades.push(Trade::new(
-                            time.clone(),
+                            time,
                             TradeSide::Buy,
                             ask.to_opt().map(|v| v.f64()).unwrap_or(f64::NAN),
                             signal - last_signal,
                         ));
                     } else if signal < last_signal {
                         trades.push(Trade::new(
-                            time.clone(),
+                            time,
                             TradeSide::Sell,
                             bid.to_opt().map(|v| v.f64()).unwrap_or(f64::NAN),
                             last_signal - signal,
@@ -129,14 +129,14 @@ where
                     let signal = signal.unwrap().f64();
                     if signal > last_signal {
                         trades.push(Trade::new(
-                            time.clone(),
+                            time,
                             TradeSide::Buy,
                             price.to_opt().map(|v| v.f64()).unwrap_or(f64::NAN),
                             signal - last_signal,
                         ));
                     } else if signal < last_signal {
                         trades.push(Trade::new(
-                            time.clone(),
+                            time,
                             TradeSide::Sell,
                             price.to_opt().map(|v| v.f64()).unwrap_or(f64::NAN),
                             last_signal - signal,

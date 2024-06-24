@@ -122,7 +122,7 @@ checksum = "1ee891b04274a59bd38b412188e24b849617b2e45a0fd8d057deb63e7403761b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -133,9 +133,9 @@ checksum = "514de17de45fdb8dc022b1a7975556c53c86f9f0aa5f534b98977b171857c2c9"
 
 [[package]]
 name = "cc"
-version = "1.0.99"
+version = "1.0.100"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96c51067fd44124faa7f870b4b1c969379ad32b2ba805aa959430ceaa384f695"
+checksum = "c891175c3fb232128f48de6590095e59198bbeb8620c310be349bfc3afd12c7b"
 dependencies = [
  "jobserver",
  "libc",
@@ -227,7 +227,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustc_version",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -251,7 +251,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -1035,7 +1035,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "76009fbe0614077fc1a2ce255e3a1881a2e3a3527097d5dc6d8212c585e7e38b"
 dependencies = [
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -1117,7 +1117,7 @@ checksum = "500cbc0ebeb6f46627f50f3f5811ccf6bf00643be300b4c3eabc0ef55dc5b5ba"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -1187,7 +1187,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -1203,9 +1203,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.67"
+version = "2.0.68"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ff8655ed1d86f3af4ee3fd3263786bc14245ad17c4c7e85ba7187fb3ae028c90"
+checksum = "901fa70d88b9d6c98022e23b4136f9f3e54e4662c3bc1bd1d84a42a9a0f0c1e9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1235,7 +1235,7 @@ checksum = "c1bbb9f3c5c463a01705937a24fdabc5047929ac764b2d5b9cf681c1f5041ed5"
 [[package]]
 name = "tea-agg"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "tea-core",
 ]
@@ -1243,7 +1243,7 @@ dependencies = [
 [[package]]
 name = "tea-core"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "ndarray",
  "num-traits",
@@ -1257,7 +1257,7 @@ dependencies = [
 [[package]]
 name = "tea-dtype"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "num-traits",
  "tea-time",
@@ -1266,7 +1266,7 @@ dependencies = [
 [[package]]
 name = "tea-error"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "anyhow",
  "polars",
@@ -1276,17 +1276,17 @@ dependencies = [
 [[package]]
 name = "tea-macros"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
 name = "tea-map"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "anyhow",
  "itertools",
@@ -1297,7 +1297,7 @@ dependencies = [
 [[package]]
 name = "tea-rolling"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "num-traits",
  "tea-core",
@@ -1307,7 +1307,7 @@ dependencies = [
 [[package]]
 name = "tea-time"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "chrono",
  "tea-error",
@@ -1320,14 +1320,13 @@ dependencies = [
  "derive_more",
  "itertools",
  "serde",
- "smartstring",
  "tevec",
 ]
 
 [[package]]
 name = "tevec"
 version = "0.2.1"
-source = "git+https://github.com/Teamon9161/tevec.git?branch=master#3f607985dd9630485a01a5a44fc7e73cc5c6d7be"
+source = "git+https://github.com/Teamon9161/tevec.git?branch=master#0039c208ee4dd9fc93dac68586d4e71aa9c5519f"
 dependencies = [
  "derive_more",
  "tea-agg",
@@ -1355,7 +1354,7 @@ checksum = "46c3384250002a6d5af4d114f2845d37b57521033f30d5c3f46c4d70e1197533"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
@@ -1366,9 +1365,9 @@ checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
 
 [[package]]
 name = "uuid"
-version = "1.8.0"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a183cf7feeba97b4dd1c0d46788634f6221d87fa961b305bed08c851829efcc0"
+checksum = "3ea73390fe27785838dcbf75b91b1d84799e28f1ce71e6f372a5dc2200c80de5"
 dependencies = [
  "getrandom",
 ]
@@ -1406,7 +1405,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
  "wasm-bindgen-shared",
 ]
 
@@ -1428,7 +1427,7 @@ checksum = "e94f17b526d0a461a191c78ea52bbce64071ed5c04c9ffe424dcb38f74171bb7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -1576,7 +1575,7 @@ checksum = "15e934569e47891f7d9411f1a451d947a60e000ab3bd24fbb970f000387d1b3b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.67",
+ "syn 2.0.68",
 ]
 
 [[package]]
