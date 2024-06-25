@@ -9,7 +9,6 @@ pub struct FutureRetKwargs {
     pub multiplier: f64,
     pub leverage: f64,
     pub slippage: f64,
-    pub ticksize: f64,
     pub c_rate: f64,
     pub blowup: bool,
     pub commision_type: CommisionType,
@@ -40,7 +39,6 @@ where
     let multiplier = kwargs.multiplier;
     let commision_type = kwargs.commision_type;
     let slippage = kwargs.slippage;
-    let ticksize = kwargs.ticksize;
     let leverage = kwargs.leverage;
     let c_rate = kwargs.c_rate;
     if let Some(contract_chg_signal_vec) = contract_chg_signal_vec {
@@ -82,9 +80,9 @@ where
                 };
                 // addup the commision fee
                 if let CommisionType::Percent = commision_type {
-                    cash -= lot_num_change * multiplier * (open * c_rate + slippage * ticksize);
+                    cash -= lot_num_change * multiplier * (open * c_rate + slippage);
                 } else {
-                    cash -= lot_num_change * (c_rate + multiplier * slippage * ticksize);
+                    cash -= lot_num_change * (c_rate + multiplier * slippage);
                 };
                 // update last lot num and last pos
                 last_lot_num = lot_num;
@@ -131,9 +129,9 @@ where
 
                     // addup the commision fee
                     if let CommisionType::Percent = commision_type {
-                        cash -= lot_num_change * multiplier * (open * c_rate + slippage * ticksize);
+                        cash -= lot_num_change * multiplier * (open * c_rate + slippage);
                     } else {
-                        cash -= lot_num_change * (c_rate + multiplier * slippage * ticksize);
+                        cash -= lot_num_change * (c_rate + multiplier * slippage);
                     };
                     // update last lot num and last pos
                     last_lot_num = lot_num;
