@@ -13,12 +13,11 @@ time = ["tevec/time"]
 
 [dependencies]
 itertools = "0.13"
-# smartstring = "1.0"
 derive_more = { version = "0.99", features = ["from"] }
 serde = { version = "1.0", features = ["derive"] }
-
-[dependencies.tevec]
-git = "https://github.com/Teamon9161/tevec.git"
-branch = "master"
-default-features = false
-features = ["agg", "rolling", "map", "time"]
+tevec = { version = "0.2.2", features = [
+    "agg",
+    "rolling",
+    "map",
+    "time",
+], default-features = false }

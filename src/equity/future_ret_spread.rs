@@ -1,7 +1,8 @@
-use super::CommisionType;
 use itertools::izip;
 use serde::Deserialize;
 use tevec::prelude::*;
+
+use super::CommisionType;
 
 #[derive(Deserialize)]
 pub struct FutureRetSpreadKwargs {

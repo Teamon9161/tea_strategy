@@ -2,13 +2,11 @@ mod future_ret;
 mod future_ret_spread;
 mod tick_future_ret;
 
-use serde::{Deserialize, Deserializer};
-
 pub use future_ret::{calc_future_ret, FutureRetKwargs};
 pub use future_ret_spread::{calc_future_ret_with_spread, FutureRetSpreadKwargs};
-pub use tick_future_ret::{calc_tick_future_ret, TickFutureRetKwargs};
-
+use serde::{Deserialize, Deserializer};
 use tevec::prelude::{tbail, TResult};
+pub use tick_future_ret::{calc_tick_future_ret, TickFutureRetKwargs};
 
 #[derive(Clone, Copy)]
 pub enum CommisionType {

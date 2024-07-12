@@ -1,7 +1,8 @@
-use super::CommisionType;
 use itertools::izip;
 use serde::{Deserialize, Deserializer};
 use tevec::prelude::*;
+
+use super::CommisionType;
 
 #[derive(Deserialize)]
 pub struct TickFutureRetKwargs {
@@ -304,8 +305,9 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use tevec::core::testing::assert_vec1d_equal_numeric;
+
+    use super::*;
 
     #[test]
     fn test_tick_future_ret_percent_signal() {

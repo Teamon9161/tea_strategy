@@ -1,7 +1,8 @@
-use crate::StrategyFilter;
 use itertools::izip;
 use serde::Deserialize;
 use tevec::prelude::*;
+
+use crate::StrategyFilter;
 
 #[derive(Deserialize)]
 pub struct FixTimeKwargs {

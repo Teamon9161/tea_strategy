@@ -1,4 +1,5 @@
-use std::{fmt::Debug, str::FromStr};
+use std::fmt::Debug;
+use std::str::FromStr;
 
 use derive_more::From;
 use itertools::izip;
@@ -120,7 +121,7 @@ where
                 }
             });
             trades
-        }
+        },
         PriceVec::Single(price_vec) => {
             let mut last_signal = f64::NAN;
             let mut trades = Vec::new();
@@ -146,7 +147,7 @@ where
                 }
             });
             trades
-        }
+        },
     }
 }
 
