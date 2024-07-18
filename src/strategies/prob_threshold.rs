@@ -29,10 +29,10 @@ fn check_kwargs(kwargs: &ProbThresholdKwargs) -> TResult<()> {
         kwargs.thresholds.0 > kwargs.thresholds.2,
         "long open thres should be greater than short open thres"
     );
-    tensure!(
-        kwargs.thresholds.1 >= kwargs.thresholds.3,
-        "long stop thres should be greater or equal than short stop thres"
-    );
+    // tensure!(
+    //     kwargs.thresholds.1 >= kwargs.thresholds.3,
+    //     "long stop thres should be greater or equal than short stop thres"
+    // );
     Ok(())
 }
 

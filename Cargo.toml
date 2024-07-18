@@ -15,7 +15,7 @@ time = ["tevec/time"]
 itertools = "0.13"
 derive_more = { version = "0.99", features = ["from"] }
 serde = { version = "1.0", features = ["derive"] }
-tevec = { version = "0.2.2", features = [
+tevec = { version = "0.2", features = [
     "agg",
     "rolling",
     "map",
