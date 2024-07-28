@@ -16,6 +16,35 @@ pub struct BollKwargs {
     pub close_signal: f64,
 }
 
+impl Default for BollKwargs {
+    fn default() -> Self {
+        Self {
+            params: (20, 0., 0., None),
+            min_periods: None,
+            delay_open: true,
+            long_signal: 1.0,
+            short_signal: -1.0,
+            close_signal: 0.0,
+        }
+    }
+}
+
+impl BollKwargs {
+    #[inline]
+    pub fn new(n: usize, m: f64) -> Self {
+        Self {
+            params: (n, m, 0., None),
+            ..Default::default()
+        }
+    }
+
+    #[inline]
+    pub fn with_m(mut self, m: f64) -> Self {
+        self.params.1 = m;
+        self
+    }
+}
+
 macro_rules! boll_logic_impl {
     (
         $kwargs: expr,
