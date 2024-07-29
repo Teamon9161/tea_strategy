@@ -20,7 +20,7 @@ impl CommissionType {
         match s.to_lowercase().as_str() {
             "percent" | "pct" => Ok(CommissionType::Percent),
             "fixed" | "absolute" | "fix" => Ok(CommissionType::Absolute),
-            _ => tbail!("invalid commision type"),
+            _ => tbail!("invalid commission type"),
         }
     }
 }

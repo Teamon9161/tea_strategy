@@ -11,7 +11,7 @@ pub struct FutureRetSpreadKwargs {
     pub leverage: f64,
     pub c_rate: f64,
     pub blowup: bool,
-    pub commision_type: CommissionType,
+    pub commission_type: CommissionType,
 }
 
 pub fn calc_future_ret_with_spread<O, T, V, VMask>(
@@ -38,7 +38,7 @@ where
     let mut last_close = None;
     let blowup = kwargs.blowup;
     let multiplier = kwargs.multiplier;
-    let commision_type = kwargs.commision_type;
+    let commission_type = kwargs.commission_type;
     let leverage = kwargs.leverage;
     let c_rate = kwargs.c_rate;
     if let Some(contract_chg_signal_vec) = contract_chg_signal_vec {
@@ -80,7 +80,7 @@ where
                     (l, l.abs() * 2.)
                 };
                 // addup the commision fee
-                if let CommissionType::Percent = commision_type {
+                if let CommissionType::Percent = commission_type {
                     let open_mul_c_rate = open * c_rate;
                     let spread = if spread.is_none() {
                         open_mul_c_rate
@@ -143,7 +143,7 @@ where
                     (l * pos.signum() - last_lot_num * last_pos.signum()).abs(),
                 );
                 // addup the commision fee
-                if let CommissionType::Percent = commision_type {
+                if let CommissionType::Percent = commission_type {
                     let open_mul_c_rate = open * c_rate;
                     let spread = if spread.is_none() {
                         open_mul_c_rate
