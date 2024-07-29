@@ -9,36 +9,36 @@ use tevec::prelude::{tbail, TResult};
 pub use tick_future_ret::{calc_tick_future_ret, TickFutureRetKwargs};
 
 #[derive(Clone, Copy)]
-pub enum CommisionType {
+pub enum CommissionType {
     Percent,
     Absolute,
 }
 
-impl CommisionType {
+impl CommissionType {
     #[inline]
     pub fn parse(s: &str) -> TResult<Self> {
         match s.to_lowercase().as_str() {
-            "percent" | "pct" => Ok(CommisionType::Percent),
-            "fixed" | "absolute" | "fix" => Ok(CommisionType::Absolute),
+            "percent" | "pct" => Ok(CommissionType::Percent),
+            "fixed" | "absolute" | "fix" => Ok(CommissionType::Absolute),
             _ => tbail!("invalid commision type"),
         }
     }
 }
 
-impl<'de> Deserialize<'de> for CommisionType {
+impl<'de> Deserialize<'de> for CommissionType {
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
-        CommisionType::parse(s.as_str()).map_err(serde::de::Error::custom)
+        CommissionType::parse(s.as_str()).map_err(serde::de::Error::custom)
     }
 }
 
-impl<A: AsRef<str>> From<A> for CommisionType {
+impl<A: AsRef<str>> From<A> for CommissionType {
     #[inline]
     fn from(s: A) -> Self {
-        CommisionType::parse(s.as_ref()).unwrap()
+        CommissionType::parse(s.as_ref()).unwrap()
     }
 }

@@ -2,7 +2,7 @@ use itertools::izip;
 use serde::Deserialize;
 use tevec::prelude::*;
 
-use super::CommisionType;
+use super::CommissionType;
 
 #[derive(Deserialize)]
 pub struct FutureRetKwargs {
@@ -12,7 +12,7 @@ pub struct FutureRetKwargs {
     pub slippage: f64,
     pub c_rate: f64,
     pub blowup: bool,
-    pub commision_type: CommisionType,
+    pub commision_type: CommissionType,
 }
 
 pub fn calc_future_ret<O, T, V, VMask>(
@@ -80,7 +80,7 @@ where
                     (l, l.abs() * 2.)
                 };
                 // addup the commision fee
-                if let CommisionType::Percent = commision_type {
+                if let CommissionType::Percent = commision_type {
                     cash -= lot_num_change * multiplier * (open * c_rate + slippage);
                 } else {
                     cash -= lot_num_change * (c_rate + multiplier * slippage);
@@ -129,7 +129,7 @@ where
                     );
 
                     // addup the commision fee
-                    if let CommisionType::Percent = commision_type {
+                    if let CommissionType::Percent = commision_type {
                         cash -= lot_num_change * multiplier * (open * c_rate + slippage);
                     } else {
                         cash -= lot_num_change * (c_rate + multiplier * slippage);

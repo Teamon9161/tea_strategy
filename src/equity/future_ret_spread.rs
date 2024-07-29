@@ -2,7 +2,7 @@ use itertools::izip;
 use serde::Deserialize;
 use tevec::prelude::*;
 
-use super::CommisionType;
+use super::CommissionType;
 
 #[derive(Deserialize)]
 pub struct FutureRetSpreadKwargs {
@@ -11,7 +11,7 @@ pub struct FutureRetSpreadKwargs {
     pub leverage: f64,
     pub c_rate: f64,
     pub blowup: bool,
-    pub commision_type: CommisionType,
+    pub commision_type: CommissionType,
 }
 
 pub fn calc_future_ret_with_spread<O, T, V, VMask>(
@@ -80,7 +80,7 @@ where
                     (l, l.abs() * 2.)
                 };
                 // addup the commision fee
-                if let CommisionType::Percent = commision_type {
+                if let CommissionType::Percent = commision_type {
                     let open_mul_c_rate = open * c_rate;
                     let spread = if spread.is_none() {
                         open_mul_c_rate
@@ -143,7 +143,7 @@ where
                     (l * pos.signum() - last_lot_num * last_pos.signum()).abs(),
                 );
                 // addup the commision fee
-                if let CommisionType::Percent = commision_type {
+                if let CommissionType::Percent = commision_type {
                     let open_mul_c_rate = open * c_rate;
                     let spread = if spread.is_none() {
                         open_mul_c_rate

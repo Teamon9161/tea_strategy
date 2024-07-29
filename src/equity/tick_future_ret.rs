@@ -2,7 +2,7 @@ use itertools::izip;
 use serde::{Deserialize, Deserializer};
 use tevec::prelude::*;
 
-use super::CommisionType;
+use super::CommissionType;
 
 #[derive(Deserialize)]
 pub struct TickFutureRetKwargs {
@@ -10,7 +10,7 @@ pub struct TickFutureRetKwargs {
     pub multiplier: f64,
     pub c_rate: f64,
     pub blowup: bool,
-    pub commision_type: CommisionType,
+    pub commision_type: CommissionType,
     pub signal_type: SignalType,
 }
 
@@ -116,7 +116,7 @@ where
                         } else {
                             (bid, mid - bid)
                         };
-                        if let CommisionType::Percent = commision_type {
+                        if let CommissionType::Percent = commision_type {
                             cash -=
                                 lot_num_change.abs() * multiplier * (open_price * c_rate + spread);
                         } else {
@@ -125,7 +125,7 @@ where
                     } else {
                         // for simple, assume spread is (bid - ask) / 2
                         // otherwise we need the bid and ask of next hot future
-                        if let CommisionType::Percent = commision_type {
+                        if let CommissionType::Percent = commision_type {
                             cash -= 2. * lot_num * multiplier * (mid * c_rate + (ask - bid) * 0.5);
                         } else {
                             cash -= 2. * lot_num * (c_rate + (ask - bid) * 0.5 * multiplier);
@@ -173,7 +173,7 @@ where
                         } else {
                             (bid, mid - bid)
                         };
-                        if let CommisionType::Percent = commision_type {
+                        if let CommissionType::Percent = commision_type {
                             cash -=
                                 lot_num_change.abs() * multiplier * (open_price * c_rate + spread);
                         } else {
@@ -229,7 +229,7 @@ where
                         } else {
                             (bid, mid - bid)
                         };
-                        if let CommisionType::Percent = commision_type {
+                        if let CommissionType::Percent = commision_type {
                             cash -=
                                 lot_num_change.abs() * multiplier * (open_price * c_rate + spread);
                         } else {
@@ -238,7 +238,7 @@ where
                     } else {
                         // for simple, assume spread is (bid - ask) / 2
                         // otherwise we need the bid and ask of next hot future
-                        if let CommisionType::Percent = commision_type {
+                        if let CommissionType::Percent = commision_type {
                             cash -= 2.
                                 * lot_num.abs()
                                 * multiplier
@@ -285,7 +285,7 @@ where
                         } else {
                             (bid, mid - bid)
                         };
-                        if let CommisionType::Percent = commision_type {
+                        if let CommissionType::Percent = commision_type {
                             cash -=
                                 lot_num_change.abs() * multiplier * (open_price * c_rate + spread);
                         } else {
@@ -322,7 +322,7 @@ mod tests {
             multiplier: 1.,
             c_rate: 0.0001,
             blowup: true,
-            commision_type: CommisionType::Percent,
+            commision_type: CommissionType::Percent,
             signal_type: SignalType::Percent,
         };
         let res: Vec<_> = calc_tick_future_ret(
@@ -352,7 +352,7 @@ mod tests {
             multiplier: 1.,
             c_rate: 0.0001,
             blowup: true,
-            commision_type: CommisionType::Percent,
+            commision_type: CommissionType::Percent,
             signal_type: SignalType::Absolute,
         };
         let res: Vec<_> = calc_tick_future_ret(
