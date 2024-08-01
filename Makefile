@@ -7,3 +7,6 @@ debug:
 
 release:
 	maturin develop --release
+
+test:
+	cargo test --all-features -- --nocapture

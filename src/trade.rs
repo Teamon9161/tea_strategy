@@ -3,8 +3,6 @@ use std::str::FromStr;
 
 use derive_more::From;
 use itertools::izip;
-#[cfg(feature = "pl")]
-use tevec::polars::prelude::Series;
 use tevec::prelude::*;
 
 #[derive(Copy, Clone, PartialEq)]
@@ -152,7 +150,7 @@ where
 }
 
 #[cfg(feature = "pl")]
-pub fn trade_vec_to_series(trades: &[Trade]) -> Series {
+pub fn trade_vec_to_series(trades: &[Trade]) -> tevec::polars::prelude::Series {
     use tevec::polars::prelude::*;
     use tevec::polars_arrow::legacy::utils::CustomIterTools;
     use tevec::prelude::{IsNone, Vec1Collect};

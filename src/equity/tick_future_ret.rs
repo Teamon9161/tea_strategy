@@ -1,8 +1,8 @@
 use itertools::izip;
-use serde::{Deserialize, Deserializer};
+use serde::Deserialize;
 use tevec::prelude::*;
 
-use super::CommissionType;
+use super::{CommissionType, SignalType};
 
 #[derive(Deserialize)]
 pub struct TickFutureRetKwargs {
@@ -14,31 +14,16 @@ pub struct TickFutureRetKwargs {
     pub signal_type: SignalType,
 }
 
-#[derive(Clone, Copy)]
-pub enum SignalType {
-    Percent,
-    Absolute,
-}
-
-impl SignalType {
-    #[inline]
-    pub fn parse(s: &str) -> TResult<Self> {
-        match s.to_lowercase().as_str() {
-            "percent" | "pct" => Ok(SignalType::Percent),
-            "fixed" | "absolute" | "fix" => Ok(SignalType::Absolute),
-            _ => tbail!("invalid signal type"),
+impl Default for TickFutureRetKwargs {
+    fn default() -> Self {
+        TickFutureRetKwargs {
+            init_cash: 0,
+            multiplier: 1.,
+            c_rate: 0.0003,
+            blowup: false,
+            commission_type: CommissionType::Percent,
+            signal_type: SignalType::Percent,
         }
-    }
-}
-
-impl<'de> Deserialize<'de> for SignalType {
-    #[inline]
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        SignalType::parse(s.as_str()).map_err(serde::de::Error::custom)
     }
 }
 
@@ -88,10 +73,15 @@ where
                 let chg = chg.unwrap_or(false);
                 let mid = (bid + ask) * 0.5;
 
-                // update last_lot_num if contract has changed
-                if last_chg {
-                    // TODO(Teamon): change
+                if last_chg && last_lot_num != 0. {
+                    // update last_lot_num if contract has changed
                     last_lot_num = ((last_lot_num * last_mid) / mid).floor();
+                    if let CommissionType::Percent = commission_type {
+                        cash -=
+                            last_lot_num.abs() * multiplier * (mid * c_rate + (ask - bid) * 0.5);
+                    } else {
+                        cash -= last_lot_num.abs() * (c_rate + (ask - bid) * 0.5 * multiplier);
+                    }
                 }
 
                 // calculate the profit and loss of the current period
@@ -126,9 +116,11 @@ where
                         // for simple, assume spread is (bid - ask) / 2
                         // otherwise we need the bid and ask of next hot future
                         if let CommissionType::Percent = commission_type {
-                            cash -= 2. * lot_num * multiplier * (mid * c_rate + (ask - bid) * 0.5);
+                            cash -= last_lot_num.abs()
+                                * multiplier
+                                * (mid * c_rate + (ask - bid) * 0.5);
                         } else {
-                            cash -= 2. * lot_num * (c_rate + (ask - bid) * 0.5 * multiplier);
+                            cash -= last_lot_num.abs() * (c_rate + (ask - bid) * 0.5 * multiplier);
                         }
                     };
 
@@ -210,6 +202,14 @@ where
                 let chg = chg.unwrap_or(false);
                 let mid = (bid + ask) * 0.5;
 
+                if last_chg && last_lot_num != 0. {
+                    if let CommissionType::Percent = commission_type {
+                        cash -= lot_num.abs() * multiplier * (mid * c_rate + (ask - bid) * 0.5);
+                    } else {
+                        cash -= lot_num.abs() * (c_rate + (ask - bid) * 0.5 * multiplier);
+                    }
+                }
+
                 // calculate the profit and loss of the current period
                 // we should not calculate the profit in this way if the contract has changed
                 if (last_lot_num != 0.) && last_mid.not_none() && (!last_chg) {
@@ -239,12 +239,11 @@ where
                         // for simple, assume spread is (bid - ask) / 2
                         // otherwise we need the bid and ask of next hot future
                         if let CommissionType::Percent = commission_type {
-                            cash -= 2.
-                                * lot_num.abs()
+                            cash -= last_lot_num.abs()
                                 * multiplier
                                 * (mid * c_rate + (ask - bid) * 0.5);
                         } else {
-                            cash -= 2. * lot_num.abs() * (c_rate + (ask - bid) * 0.5 * multiplier);
+                            cash -= last_lot_num.abs() * (c_rate + (ask - bid) * 0.5 * multiplier);
                         }
                     };
 
@@ -276,7 +275,7 @@ where
                     if (last_lot_num != 0.) && last_mid.not_none() {
                         cash += last_lot_num * (mid - last_mid) * multiplier;
                     }
-
+                    let out = cash;
                     // addup the commision fee
                     if lot_num != last_lot_num {
                         let lot_num_change = lot_num - last_lot_num;
@@ -296,7 +295,7 @@ where
                     }
 
                     last_mid = mid; // update last close
-                    cash.into_cast::<T>()
+                    out.into_cast::<T>()
                 })
                 .collect_trusted_vec1()
         }
@@ -333,9 +332,10 @@ mod tests {
             &kwargs,
         );
         let expect = vec![
-            10000., 10000., 10047.5009, 10144.5009, 10047.5009, 9853.5009, 9754.5318, 9660.5318,
-            9636.073, 9796.1162, 9888.1162, 9791.208,
+            10000.0, 10000.0, 10047.5009, 10144.5009, 10047.5009, 9853.5009, 9779.5458, 9685.5458,
+            9661.087, 9821.1302, 9913.1302, 9816.222,
         ];
+        // assert_eq!(expect, res);
         assert_vec1d_equal_numeric(&res, &expect, Some(1e-7));
     }
 
@@ -363,8 +363,8 @@ mod tests {
             &kwargs,
         );
         let expect = vec![
-            10000., 10000., 10000.4897, 10001.4897, 9998.9792, 9994.9792, 9993.9589, 9991.9589,
-            9991.4385, 9994.9177, 9996.9177, 9993.3568,
+            10000.0, 10000.0, 10000.4897, 10001.4897, 9998.9792, 9994.9792, 9993.43825, 9991.43825,
+            9990.91785, 9994.39705, 9996.39705, 9992.83615,
         ];
         assert_vec1d_equal_numeric(&res, &expect, Some(1e-7));
     }
