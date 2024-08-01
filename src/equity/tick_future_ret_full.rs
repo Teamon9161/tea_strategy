@@ -99,7 +99,8 @@ where
     if signal_vec.is_empty() {
         return Vec::empty();
     }
-    let mut cash = kwargs.init_cash as f64;
+    let init_cash = kwargs.init_cash as f64;
+    let mut cash = init_cash;
     let mut last_lot_num = 0.;
     let mut last_chg = false;
     let mut last_mid = f64::NAN;
@@ -147,7 +148,7 @@ where
                 if (last_lot_num != 0.) && last_mid.not_none() && (!last_chg) {
                     cash += last_lot_num * (mid - last_mid) * multiplier;
                 }
-                let out = (cash, realize_profit, average_open_price).into();
+                let out = (cash - init_cash, realize_profit, average_open_price).into();
                 // TODO(Teamon): how to handle the case when the contract has changed
                 // should we pass daily open price as another input?
                 // currently we just ignore the profit and loss in the first tick when there is a contract change
@@ -243,7 +244,7 @@ where
                     if (last_lot_num != 0.) && last_mid.not_none() {
                         cash += last_lot_num * (mid - last_mid) * multiplier;
                     }
-                    let out = (cash, realize_profit, average_open_price).into();
+                    let out = (cash - init_cash, realize_profit, average_open_price).into();
                     // addup the commision fee
                     if lot_num != last_lot_num {
                         let lot_num_change = lot_num - last_lot_num;
@@ -373,9 +374,7 @@ mod tests {
 #[cfg(feature = "pl")]
 pub fn profit_vec_to_series(trades: &[Profit]) -> tevec::polars::prelude::Series {
     use tevec::polars::prelude::*;
-    // use tevec::polars_arrow::legacy::utils::CustomIterTools;
     use tevec::prelude::{IsNone, Vec1Collect};
-    // let len = trades.len();
     let unrealized_profit: Float64Chunked = trades
         .iter()
         .map(|t| t.unrealize.to_opt())
