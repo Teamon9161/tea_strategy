@@ -149,7 +149,7 @@ where
     }
 }
 
-#[cfg(feature = "pl")]
+#[cfg(feature = "polars")]
 pub fn trade_vec_to_series(trades: &[Trade]) -> tevec::polars::prelude::Series {
     use tevec::polars::export::arrow::legacy::utils::CustomIterTools;
     use tevec::polars::prelude::*;

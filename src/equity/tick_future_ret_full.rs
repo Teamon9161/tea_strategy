@@ -371,7 +371,7 @@ mod tests {
     }
 }
 
-#[cfg(feature = "pl")]
+#[cfg(feature = "polars")]
 pub fn profit_vec_to_series(trades: &[Profit]) -> tevec::polars::prelude::Series {
     use tevec::polars::prelude::*;
     use tevec::prelude::{IsNone, Vec1Collect};

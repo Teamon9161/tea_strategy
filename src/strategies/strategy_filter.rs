@@ -1,5 +1,5 @@
 use itertools::izip;
-#[cfg(feature = "pl")]
+#[cfg(feature = "polars")]
 use tevec::polars::prelude::{BooleanChunked, DataFrame};
 use tevec::prelude::*;
 
@@ -25,7 +25,7 @@ impl<T: Vec1View<Option<bool>>> StrategyFilter<T> {
     }
 }
 
-#[cfg(feature = "pl")]
+#[cfg(feature = "polars")]
 impl From<DataFrame> for StrategyFilter<BooleanChunked> {
     fn from(df: DataFrame) -> Self {
         assert_eq!(df.width(), 4);
@@ -38,7 +38,7 @@ impl From<DataFrame> for StrategyFilter<BooleanChunked> {
     }
 }
 
-#[cfg(feature = "pl")]
+#[cfg(feature = "polars")]
 impl<'a> From<&'a DataFrame> for StrategyFilter<&'a BooleanChunked> {
     fn from(df: &'a DataFrame) -> Self {
         assert_eq!(df.width(), 4);
