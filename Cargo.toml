@@ -10,6 +10,7 @@ default = ["polars"]
 polars = ["tevec/polars", "time"]
 ndarray = ["tevec/ndarray"]
 time = ["tevec/time"]
+serde = ["tevec/serde"]
 
 [dependencies]
 itertools = "0.13"
