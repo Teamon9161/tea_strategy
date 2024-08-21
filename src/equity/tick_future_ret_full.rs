@@ -372,8 +372,8 @@ mod tests {
 }
 
 #[cfg(feature = "polars")]
-pub fn profit_vec_to_series(trades: &[Profit]) -> tevec::polars::prelude::Series {
-    use tevec::polars::prelude::*;
+pub fn profit_vec_to_series(trades: &[Profit]) -> tevec::export::polars::prelude::Series {
+    use tevec::export::polars::prelude::*;
     use tevec::prelude::{IsNone, Vec1Collect};
     let unrealized_profit: Float64Chunked = trades
         .iter()

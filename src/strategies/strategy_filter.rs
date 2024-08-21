@@ -1,6 +1,6 @@
 use itertools::izip;
 #[cfg(feature = "polars")]
-use tevec::polars::prelude::{BooleanChunked, DataFrame};
+use tevec::export::polars::prelude::{BooleanChunked, DataFrame};
 use tevec::prelude::*;
 
 #[derive(Clone)]

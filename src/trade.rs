@@ -150,9 +150,9 @@ where
 }
 
 #[cfg(feature = "polars")]
-pub fn trade_vec_to_series(trades: &[Trade]) -> tevec::polars::prelude::Series {
-    use tevec::polars::export::arrow::legacy::utils::CustomIterTools;
-    use tevec::polars::prelude::*;
+pub fn trade_vec_to_series(trades: &[Trade]) -> tevec::export::polars::prelude::Series {
+    use tevec::export::polars::export::arrow::legacy::utils::CustomIterTools;
+    use tevec::export::polars::prelude::*;
     use tevec::prelude::{IsNone, Vec1Collect};
     let len = trades.len();
     let price: Float64Chunked = trades
