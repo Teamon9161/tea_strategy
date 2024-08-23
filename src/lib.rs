@@ -2,7 +2,8 @@ mod strategies;
 mod trade;
 
 pub mod equity;
-
+mod order_book;
+pub use order_book::{OrderBook, OrderBookLevel};
 pub use strategies::*;
 pub use tevec;
 #[cfg(feature = "polars")]
