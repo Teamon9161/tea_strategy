@@ -1,20 +1,32 @@
+/// Represents an order book with five levels of depth.
 #[derive(Default, Debug, Clone, Eq, PartialEq)]
 pub struct OrderBook {
+    /// The first (best) level of the order book.
     pub level1: OrderBookLevel,
+    /// The second level of the order book.
     pub level2: OrderBookLevel,
+    /// The third level of the order book.
     pub level3: OrderBookLevel,
+    /// The fourth level of the order book.
     pub level4: OrderBookLevel,
+    /// The fifth level of the order book.
     pub level5: OrderBookLevel,
 }
 
+/// Represents a single level in the order book.
 #[derive(Clone, Copy, Debug)]
 pub struct OrderBookLevel {
+    /// The ask (sell) price at this level.
     pub ask_price: f64,
+    /// The bid (buy) price at this level.
     pub bid_price: f64,
+    /// The volume available at the ask price.
     pub ask_volume: f64,
+    /// The volume available at the bid price.
     pub bid_volume: f64,
 }
 
+/// Compares two f64 values for equality, considering NaN values.
 #[inline]
 fn f64_eq(a: f64, b: f64) -> bool {
     if a.is_nan() && b.is_nan() {
@@ -24,6 +36,7 @@ fn f64_eq(a: f64, b: f64) -> bool {
 }
 
 impl PartialEq for OrderBookLevel {
+    #[inline]
     fn eq(&self, other: &Self) -> bool {
         f64_eq(self.ask_price, other.ask_price)
             && f64_eq(self.bid_price, other.bid_price)
@@ -35,6 +48,7 @@ impl PartialEq for OrderBookLevel {
 impl Eq for OrderBookLevel {}
 
 impl Default for OrderBookLevel {
+    #[inline]
     fn default() -> Self {
         Self {
             ask_price: f64::NAN,
@@ -93,6 +107,7 @@ where
 }
 
 impl OrderBookLevel {
+    /// Creates a new OrderBookLevel with the given prices and volumes.
     #[inline]
     pub fn new(ask_price: f64, bid_price: f64, ask_volume: f64, bid_volume: f64) -> Self {
         Self {
@@ -103,11 +118,13 @@ impl OrderBookLevel {
         }
     }
 
+    /// Calculates the total ask amount (price * volume) for this level.
     #[inline]
     pub fn ask_amt(&self) -> f64 {
         self.ask_price * self.ask_volume
     }
 
+    /// Calculates the total bid amount (price * volume) for this level.
     #[inline]
     pub fn bid_amt(&self) -> f64 {
         self.bid_price * self.bid_volume
@@ -115,6 +132,7 @@ impl OrderBookLevel {
 }
 
 impl OrderBook {
+    /// Creates a new OrderBook with the given levels.
     #[inline]
     pub fn new<T: Into<OrderBookLevel>>(
         level1: T,
@@ -132,9 +150,22 @@ impl OrderBook {
         }
     }
 
-    /// get the buy price for the given volume
-    /// if the volume is larger than the total available volume, return Err(avg_price, available_volume)
-    /// otherwise, return Ok(price)
+    /// Calculates the buy price for a given volume.
+    ///
+    /// If the volume is larger than the total available volume, it returns an error
+    /// with the average price and available volume. Otherwise, it returns the calculated price.
+    ///
+    /// # Arguments
+    ///
+    /// * `volume` - The volume to buy
+    ///
+    /// # Returns
+    ///
+    /// * `Ok(f64)` - The calculated buy price
+    /// * `Err((f64, f64))` - The average price and available volume if the requested volume exceeds the available volume
+    ///
+    /// # Examples
+    ///
     /// ```
     /// use tea_strategy::OrderBook;
     /// let order_book = OrderBook::new(
@@ -191,9 +222,22 @@ impl OrderBook {
         Err((amt / available_volume, available_volume))
     }
 
-    /// get the sell price for the given volume
-    /// if the volume is larger than the total available volume, return Err(avg_price, available_volume)
-    /// otherwise, return Ok(price)
+    /// Calculates the sell price for a given volume.
+    ///
+    /// If the volume is larger than the total available volume, it returns an error
+    /// with the average price and available volume. Otherwise, it returns the calculated price.
+    ///
+    /// # Arguments
+    ///
+    /// * `volume` - The volume to sell
+    ///
+    /// # Returns
+    ///
+    /// * `Ok(f64)` - The calculated sell price
+    /// * `Err((f64, f64))` - The average price and available volume if the requested volume exceeds the available volume
+    ///
+    /// # Examples
+    ///
     /// ```
     /// use tea_strategy::OrderBook;
     /// let order_book = OrderBook::new(
