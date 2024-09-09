@@ -387,7 +387,7 @@ pub fn profit_vec_to_series(trades: &[Profit]) -> tevec::export::polars::prelude
         .iter()
         .map(|t| t.open_price.to_opt())
         .collect_trusted_vec1();
-    let res: StructChunked = StructChunked::new(
+    let res: StructChunked = StructChunked::from_series(
         "profit",
         &[
             unrealized_profit

@@ -172,7 +172,7 @@ pub fn trade_vec_to_series(trades: &[Trade]) -> tevec::export::polars::prelude::
         .iter()
         .map(|t| Some(t.side.as_str()))
         .collect_trusted();
-    let res: StructChunked = StructChunked::new(
+    let res: StructChunked = StructChunked::from_series(
         "trade",
         &[
             time.into_series().with_name("time"),
