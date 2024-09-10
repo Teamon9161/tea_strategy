@@ -1,5 +1,4 @@
-use std::fmt::Debug;
-use std::str::FromStr;
+use std::{fmt::Debug, str::FromStr};
 
 use derive_more::From;
 use itertools::izip;
@@ -151,9 +150,10 @@ where
 
 #[cfg(feature = "polars")]
 pub fn trade_vec_to_series(trades: &[Trade]) -> tevec::export::polars::prelude::Series {
-    use tevec::export::polars::export::arrow::legacy::utils::CustomIterTools;
-    use tevec::export::polars::prelude::*;
-    use tevec::prelude::{IsNone, Vec1Collect};
+    use tevec::{
+        export::{arrow::legacy::utils::CustomIterTools, polars::prelude::*},
+        prelude::{IsNone, Vec1Collect},
+    };
     let len = trades.len();
     let price: Float64Chunked = trades
         .iter()
