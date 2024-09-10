@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default = ["polars"]
-polars = ["tevec/polars", "time", "dep:polars"]
+default = ["time", "polars"]
+polars = ["tevec/polars", "dep:polars"]
 polars-lazy = ["polars", "tevec/polars-lazy"]
 ndarray = ["tevec/ndarray"]
 time = ["tevec/time"]

@@ -8,11 +8,11 @@ pub use future_ret_spread::{calc_future_ret_with_spread, FutureRetSpreadKwargs};
 use serde::{Deserialize, Deserializer};
 use tevec::prelude::{tbail, TResult};
 pub use tick_future_ret::{calc_tick_future_ret, TickFutureRetKwargs};
+#[cfg(feature = "polars")]
+pub use tick_future_ret_full::profit_vec_to_series;
 pub use tick_future_ret_full::{
-    calc_tick_future_ret_full, profit_vec_to_series, OpenPriceMethod, Profit,
-    TickFutureRetFullKwargs,
+    calc_tick_future_ret_full, OpenPriceMethod, Profit, TickFutureRetFullKwargs,
 };
-
 #[derive(Clone, Copy)]
 pub enum CommissionType {
     Percent,
