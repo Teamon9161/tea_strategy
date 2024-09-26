@@ -4,8 +4,8 @@ use tevec::prelude::*;
 
 use crate::StrategyFilter;
 
-#[derive(Deserialize)]
-#[allow(dead_code)]
+#[derive(Deserialize, Clone)]
+// #[allow(dead_code)]
 pub struct BollKwargs {
     // window, open_width, stop_width, take_profit_width
     pub params: (usize, f64, f64, Option<f64>),

@@ -7,7 +7,7 @@ edition = "2021"
 
 [features]
 default = ["time", "polars"]
-polars = ["tevec/polars", "dep:polars"]
+polars = ["tevec/polars-struct"]
 polars-lazy = ["polars", "tevec/polars-lazy"]
 ndarray = ["tevec/ndarray"]
 time = ["tevec/time"]
@@ -23,7 +23,3 @@ tevec = { version = "0.4", features = [
     "map",
     # "time",
 ], default-features = false }
-# this dependency can be removed once tevec expose polars dtype-struct feature
-polars = { version = ">=0.42, <0.43", optional = true, default-features = false, features = [
-    "dtype-struct",
-] }

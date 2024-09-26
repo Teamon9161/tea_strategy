@@ -15,7 +15,7 @@ fn arc_kelly(pos: f64, b: f64) -> f64 {
     (pos * b + 1.) / (b + 1.)
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct MartingaleKwargs {
     pub n: usize,            // rolling window
     pub step: Option<usize>, // adjust step

@@ -4,7 +4,7 @@ use tevec::prelude::*;
 
 use crate::StrategyFilter;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct ProbThresholdKwargs {
     // long open thres, long stop thres, short open thres, short stop thres
     pub thresholds: (f64, f64, f64, f64),

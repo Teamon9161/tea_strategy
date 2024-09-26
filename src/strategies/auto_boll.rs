@@ -6,7 +6,7 @@ use tevec::prelude::*;
 
 use crate::StrategyFilter;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct AutoBollKwargs {
     // window, open_width, stop_width
     pub params: (usize, f64, f64),

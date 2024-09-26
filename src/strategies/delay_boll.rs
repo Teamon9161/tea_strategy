@@ -4,7 +4,7 @@ use tevec::prelude::*;
 
 use crate::StrategyFilter;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct DelayBollKwargs {
     // window, open_width, stop_width, delay_width
     pub params: (usize, f64, f64, f64, Option<f64>),

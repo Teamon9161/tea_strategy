@@ -4,7 +4,7 @@ use tevec::prelude::*;
 
 use crate::StrategyFilter;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct FixTimeKwargs {
     pub n: usize,
     pub pos_map: Option<(Vec<f64>, Vec<f64>)>,
