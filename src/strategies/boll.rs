@@ -5,12 +5,13 @@ use tevec::prelude::*;
 use crate::StrategyFilter;
 
 #[derive(Deserialize, Clone)]
-// #[allow(dead_code)]
 pub struct BollKwargs {
-    // window, open_width, stop_width, take_profit_width
+    /// window, open_width, stop_width, take_profit_width
     pub params: (usize, f64, f64, Option<f64>),
     pub min_periods: Option<usize>,
     pub delay_open: bool,
+    /// if false, use 0 as middle, 1 as std
+    pub zscore: bool,
     pub long_signal: f64,
     pub short_signal: f64,
     pub close_signal: f64,
@@ -22,6 +23,7 @@ impl Default for BollKwargs {
             params: (20, 0., 0., None),
             min_periods: None,
             delay_open: true,
+            zscore: true,
             long_signal: 1.0,
             short_signal: -1.0,
             close_signal: 0.0,
@@ -110,8 +112,13 @@ where
     let mut last_signal = kwargs.close_signal;
     let mut last_fac = 0.;
     let min_periods = kwargs.min_periods.unwrap_or(kwargs.params.0 / 2);
-    let middle_arr: Vec<f64> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
-    let std_arr: Vec<f64> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
+    let (middle_arr, std_arr) = if kwargs.zscore {
+        let middle_arr: Vec<f64> = fac_arr.ts_vmean(kwargs.params.0, Some(min_periods));
+        let std_arr: Vec<f64> = fac_arr.ts_vstd(kwargs.params.0, Some(min_periods));
+        (middle_arr, std_arr)
+    } else {
+        (vec![0.; fac_arr.len()], vec![1.; fac_arr.len()])
+    };
     if let Some(filter) = filter {
         let zip_ = izip!(
             fac_arr.titer(),
@@ -240,9 +247,7 @@ mod tests {
             params: (4, 1.0, 0., None),
             min_periods: None,
             delay_open: false,
-            long_signal: 1.0,
-            short_signal: -1.0,
-            close_signal: 0.0,
+            ..Default::default()
         };
         let filter: Option<StrategyFilter<Vec<Option<bool>>>> = None;
         let signal: Vec<_> = boll(&close.opt(), filter.as_ref(), &kwargs);
