@@ -372,6 +372,7 @@ mod tests {
 }
 
 #[cfg(feature = "polars")]
+#[allow(clippy::useless_conversion)] // needed for support polars version below 0.43
 pub fn profit_vec_to_series(trades: &[Profit]) -> tevec::export::polars::prelude::Series {
     use tevec::{
         export::polars::prelude::*,
@@ -390,13 +391,15 @@ pub fn profit_vec_to_series(trades: &[Profit]) -> tevec::export::polars::prelude
         .map(|t| t.open_price.to_opt())
         .collect_trusted_vec1();
     let res: StructChunked = StructChunked::from_series(
-        "profit",
+        "profit".into(),
         &[
             unrealized_profit
                 .into_series()
-                .with_name("unrealized_profit"),
-            realized_profit.into_series().with_name("realized_profit"),
-            open_price.into_series().with_name("open_price"),
+                .with_name("unrealized_profit".into()),
+            realized_profit
+                .into_series()
+                .with_name("realized_profit".into()),
+            open_price.into_series().with_name("open_price".into()),
         ],
     )
     .unwrap();

@@ -149,6 +149,7 @@ where
 }
 
 #[cfg(feature = "polars")]
+#[allow(clippy::useless_conversion)] // needed for support polars version below 0.43
 pub fn trade_vec_to_series(trades: &[Trade]) -> tevec::export::polars::prelude::Series {
     use tevec::{
         export::{arrow::legacy::utils::CustomIterTools, polars::prelude::*},
@@ -173,12 +174,12 @@ pub fn trade_vec_to_series(trades: &[Trade]) -> tevec::export::polars::prelude::
         .map(|t| Some(t.side.as_str()))
         .collect_trusted();
     let res: StructChunked = StructChunked::from_series(
-        "trade",
+        "trade".into(),
         &[
-            time.into_series().with_name("time"),
-            side.into_series().with_name("side"),
-            price.into_series().with_name("price"),
-            num.into_series().with_name("num"),
+            time.into_series().with_name("time".into()),
+            side.into_series().with_name("side".into()),
+            price.into_series().with_name("price".into()),
+            num.into_series().with_name("num".into()),
         ],
     )
     .unwrap();
